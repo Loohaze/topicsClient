@@ -11,6 +11,6 @@ public class DictTest {
     @Test
     public void addWordsTest(){
         Dict dict = new DictImpl();
-        dict.addWord();
+        dict.addWord("马克思主义");
     }
 }
