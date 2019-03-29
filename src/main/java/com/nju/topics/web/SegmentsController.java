@@ -18,7 +18,7 @@ public class SegmentsController {
         this.segments = segments;
     }
 
-    @GetMapping()
+    @GetMapping("/getSegments")
     public List<Segment> getSegments(){
         return segments.getAllSegments();
     }
