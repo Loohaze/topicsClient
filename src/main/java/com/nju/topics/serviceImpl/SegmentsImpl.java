@@ -2,6 +2,8 @@ package com.nju.topics.serviceImpl;
 
 import com.nju.topics.domain.Segment;
 import com.nju.topics.service.Segments;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
 
 import java.io.*;
@@ -9,7 +11,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+@Service
 public class SegmentsImpl implements Segments {
+
+
+    @Autowired
+    public SegmentsImpl() {
+    }
 
     @Override
     public List<Segment> getAllSegments() {
