@@ -14,11 +14,25 @@ public class Config {
     @Value("${seg.dict.path}")
     private String dictPath;
 
+    @Value("${web.upload.file}")
+    private String uploadPath;
+
+    @Value("${web.download.file}")
+    private String downloadPath;
+
     public String getSegmentsPath() {
         return segmentsPath;
     }
 
     public String getDictPath() {
         return dictPath;
+    }
+
+    public String getUploadPath() {
+        return uploadPath;
+    }
+
+    public String getDownloadPath() {
+        return downloadPath;
     }
 }

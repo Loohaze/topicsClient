@@ -1,0 +1,16 @@
+#upFile{
+    padding-top: 20px;
+    padding-bottom: 30px;
+}
+
+#showTable{
+    width: 80%;
+    align-items: center;
+    text-align: center;
+    padding-left: 15%;
+    margin-left: 10%;
+}
+
+th{
+    text-align: center;
+}
