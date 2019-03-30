@@ -54,7 +54,8 @@
                         <div class="row">
                             <div class="col-xs-1"></div>
                             <div class="col-xs-9 segParts">
-                                {{segment.segments}}
+                                <i v-for="eachS in segment.segments">{{eachS}}/</i>
+                                <!--{{segment.segments}}-->
                             </div>
                             <div class="col-xs-1"></div>
                         </div>
@@ -99,7 +100,7 @@
             <div class="modal-content">
                 <div class="modal-body">
                     <div class="row modalShow segTitle">&nbsp;&nbsp;&nbsp;题目:{{oneSeg.title}}</div>
-                    <div class="row modalShow segTitle">&nbsp;&nbsp;&nbsp;分词:{{oneSeg.segments}}</div>
+                    <div class="row modalShow segTitle">&nbsp;&nbsp;&nbsp;分词:<i v-for="eachOS in oneSeg.segments">{{eachOS}}/</i></div>
                     <div class="row modalShow segTitle">
                         &nbsp;&nbsp;&nbsp;新增:
                         <input type="text" class="segmentInput" v-model="newName"/>

@@ -1,5 +1,6 @@
 package com.nju.topics.serviceImpl;
 
+import com.nju.topics.config.Config;
 import com.nju.topics.domain.Segment;
 import com.nju.topics.service.Segments;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,8 @@ import java.util.List;
 @Service
 public class SegmentsImpl implements Segments {
 
+    @Autowired
+    private Config config;
 
     @Autowired
     public SegmentsImpl() {
@@ -24,7 +27,8 @@ public class SegmentsImpl implements Segments {
         List<Segment> result = new ArrayList<>();
         File segmentsFile = null;
         try {
-            segmentsFile = ResourceUtils.getFile("classpath:documents/segments.txt");
+            segmentsFile = ResourceUtils.getFile(config.getSegmentsPath());
+//            segmentsFile = ResourceUtils.getFile("classpath:documents/segments.txt");
             if (segmentsFile.exists()) {
 
                 InputStreamReader read = new InputStreamReader(new FileInputStream(segmentsFile),"utf8");

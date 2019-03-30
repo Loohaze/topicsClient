@@ -26,8 +26,8 @@ public class WebConfig extends WebMvcConfigurerAdapter implements ApplicationCon
     }
 
     // 获取配置文件中图片的路径
-    @Value("${web.upload-path}")
-    private String mImagesPath;
+//    @Value("${web.upload-path}")
+//    private String mImagesPath;
 
 
     @Override
@@ -36,7 +36,7 @@ public class WebConfig extends WebMvcConfigurerAdapter implements ApplicationCon
         registry.addResourceHandler("/templates/**").addResourceLocations(ResourceUtils.CLASSPATH_URL_PREFIX+"/templates/");
 
         // 访问图片方法
-        registry.addResourceHandler("/showImages/**").addResourceLocations(mImagesPath);
+//        registry.addResourceHandler("/showImages/**").addResourceLocations(mImagesPath);
 
 
         super.addResourceHandlers(registry);

@@ -4,6 +4,7 @@ import com.nju.topics.config.Config;
 import com.nju.topics.service.Dict;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ResourceUtils;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -15,6 +16,9 @@ import java.util.Map;
 public class DictImpl implements Dict {
 
     @Autowired
+    private Config config;
+
+    @Autowired
     public DictImpl() {
     }
 
@@ -24,7 +28,8 @@ public class DictImpl implements Dict {
         HashMap<String, Integer> dictMap = new HashMap<>();
         File dict = null;
         try {
-            dict = new File("src/main/resources/dictFile/dict.txt");
+            dict = ResourceUtils.getFile(config.getDictPath());
+//            dict = new File("src/main/resources/dictFile/dict.txt");
             if (dict.exists()) {
                 InputStreamReader read = new InputStreamReader(new FileInputStream(dict), "utf8");
                 BufferedReader bufferedReader = new BufferedReader(read);
@@ -56,7 +61,8 @@ public class DictImpl implements Dict {
         File dict = null;
 
         try {
-            dict = new File("src/main/resources/dictFile/dict.txt");
+            dict = ResourceUtils.getFile(config.getDictPath());
+//            dict = new File("src/main/resources/dictFile/dict.txt");
             if (dict.exists()) {
                 InputStreamReader read = new InputStreamReader(new FileInputStream(dict), "utf8");
                 BufferedReader bufferedReader = new BufferedReader(read);
@@ -81,7 +87,8 @@ public class DictImpl implements Dict {
         HashMap<String,Integer> dictMap = new HashMap<>();
         File dict = null;
         try {
-            dict = new File("src/main/resources/dictFile/dict.txt");
+            dict = ResourceUtils.getFile(config.getDictPath());
+//            dict = new File("src/main/resources/dictFile/dict.txt");
             if (dict.exists()) {
                 InputStreamReader read = new InputStreamReader(new FileInputStream(dict), "utf8");
                 BufferedReader bufferedReader = new BufferedReader(read);

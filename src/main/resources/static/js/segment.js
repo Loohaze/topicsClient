@@ -6,11 +6,7 @@ function segmentTrain() {
     var segVue=new Vue({
         el:"#segmentVue",
         data:{
-            segments:[{title:"我是一只小小小鸟0",segments:["我是","一只","小小","小鸟"]},
-                {title:"我是一只小小小鸟3",segments:"我是，一只，小小，小鸟"},
-                {title:"我是一只小小小鸟2",segments:"我是，一只，小小，小鸟"},
-                {title:"我是一只小小小鸟1",segments:"我是，一只，小小，小鸟"},
-                {title:"我是一只小小小鸟4",segments:"我是，一只，小小，小鸟"}],
+            segments:[{title:"我是一只小小小鸟0",segments:["我是","一只","小小","小鸟"]}],
             oneSeg:"",
             newName:"",
             myselfSegments:["CSSCI","111","2222","3333","4444"],
@@ -34,6 +30,8 @@ function segmentTrain() {
                         }
                     }
                     if(flag){
+                        this.$http.post("http://47.100.37.139:8080/dict/addDict/"+this.newName);
+                        // this.$http.post("http://localhost:8080/dict/addDict/"+this.newName);
                         this.myselfSegments.push(this.newName);
                         $("#addModal").map(function () {
                             if (!$(this).is(":hidden")){
@@ -53,6 +51,8 @@ function segmentTrain() {
                 // alert("sure to delete the segment:"+mySeg)
             },
             confirmDelete:function () {
+                this.$http.post("http://47.100.37.139:8080/dict/delete/"+this.deleteSegment);
+                // this.$http.post("http://localhost:8080/dict/delete/"+this.deleteSegment);
                 var newMyselfSegs=[];
                 for(i=0;i<this.myselfSegments.length;i++){
                     if(this.myselfSegments[i]!=this.deleteSegment){
@@ -66,6 +66,25 @@ function segmentTrain() {
                     }
                 });
             }
+        },
+        mounted:function () {
+            // this.$http.get("http://localhost:8080/seg/getSegments").then(function (response) {
+            this.$http.get("http://47.100.37.139:8080/seg/getSegments").then(function (response) {
+                if(response.data.length>0){
+                    this.segments=response.data;
+                }else{
+                    this.segments=[];
+                }
+            });
+            // this.$http.get("http://localhost:8080/dict/getDict").then(function (response) {
+            this.$http.get("http://47.100.37.139:8080/dict/getDict").then(function (response) {
+                if (response.data.length>0){
+                    this.myselfSegments=response.data;
+                }
+                else {
+                    this.myselfSegments=[];
+                }
+            })
         }
     })
 }
