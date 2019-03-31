@@ -6,10 +6,10 @@ function segmentTrain() {
     var segVue=new Vue({
         el:"#segmentVue",
         data:{
-            segments:[{title:"我是一只小小小鸟0",segments:["我是","一只","小小","小鸟"]}],
+            segments:[{title:"正在加载分词文件...",segments:["请稍等..."]}],
             oneSeg:"",
             newName:"",
-            myselfSegments:["CSSCI","111","2222","3333","4444"],
+            myselfSegments:["CSSCI"],
             deleteSegment:""
         },
         methods:{
@@ -73,7 +73,7 @@ function segmentTrain() {
                 if(response.data.length>0){
                     this.segments=response.data;
                 }else{
-                    this.segments=[];
+                    this.segments=[{title:"分词文件为空",segments:"请通知管理人员上传分词文件"}];
                 }
             });
             // this.$http.get("http://localhost:8080/dict/getDict").then(function (response) {

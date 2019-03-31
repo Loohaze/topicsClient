@@ -1,5 +1,5 @@
 #head{
-    width: 1322px;
+    width: 100%;
     /*background:url("../images/hbg.jpg") repeat-x left top;*/
     border-bottom-style: solid;
     border-bottom-width: 2px;
@@ -51,6 +51,15 @@
     overflow: hidden;
     padding-left: 3%;
 }
+.segTitleM{
+    font-size: 20px;
+    font-family: 宋体;
+    height: 45px;
+    line-height: 45px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding-left: 3%;
+}
 
 .modal-dialog{
     width:900px;
@@ -66,6 +75,8 @@
     border-bottom-width: 1px;
     border-color:#d4d4d4;
     padding-left: 3%;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 .btnSeg{
    margin-top: 5px;
