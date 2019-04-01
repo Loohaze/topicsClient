@@ -51,6 +51,16 @@
     overflow: hidden;
     padding-left: 3%;
 }
+
+.segTitleInput{
+    font-size: 20px;
+    font-family: 宋体;
+    height: 40px;
+    line-height: 45px;
+    overflow: hidden;
+    padding-left: 2%;
+}
+
 .segTitleM{
     font-size: 20px;
     font-family: 宋体;
