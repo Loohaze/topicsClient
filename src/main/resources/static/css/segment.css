@@ -143,3 +143,23 @@
     border-radius: 0px;
 }
 
+.addInputButton{
+    border-radius: 100%;
+    background-color: #f9f9f9;
+}
+
+
+.btn:focus,
+.btn:active:focus,
+.btn.active:focus,
+.btn.focus,
+.btn:active.focus,
+.btn.active.focus {
+    outline: none;
+    background-color: #f9f9f9;
+}
+
+.btn:hover{
+    background-color: #999999;
+}
+
