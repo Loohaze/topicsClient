@@ -149,17 +149,17 @@
 }
 
 
-.btn:focus,
-.btn:active:focus,
-.btn.active:focus,
-.btn.focus,
-.btn:active.focus,
-.btn.active.focus {
+.addInputButton:focus,
+.addInputButton:active:focus,
+.addInputButton.active:focus,
+.addInputButton.focus,
+.addInputButton:active.focus,
+.addInputButton.active.focus {
     outline: none;
     background-color: #f9f9f9;
 }
 
-.btn:hover{
+.addInputButton:hover{
     background-color: #999999;
 }
 

@@ -6,7 +6,7 @@ function segmentTrain() {
     var segVue=new Vue({
         el:"#segmentVue",
         data:{
-            segmentFiles:[],
+            segmentFiles:["没有文件"],
             nowSegmentFile:"",
             segments:[{title:"正在加载分词文件...",segments:["请稍等..."]}],
             oneSeg:"",
