@@ -5,18 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>文件管理</title>
 
-    <script src="../../static/staticJS/jquery.min.js"></script>
-    <script src="../../static/staticJS/vue.min.js"></script>
-    <script src="../../static/staticJS/vue-resource.js"></script>
-    <script src="../../static/staticJS/toastr.min.js"></script>
-    <script src="../../static/staticJS/bootstrap.min.js"></script>
+    <script src="/staticJS/jquery.min.js"></script>
+    <script src="/staticJS/vue.min.js"></script>
+    <script src="/staticJS/vue-resource.js"></script>
+    <script src="/staticJS/toastr.min.js"></script>
+    <script src="/staticJS/bootstrap.min.js"></script>
+    <script src="/staticJS/jquery.form.min.js"></script>
+    <script src="/js/fileUD.js"></script>
     <!--../../static-->
 
-    <link rel="stylesheet" href="../../static/staticCSS/bootstrap.min.css"/>
-    <link rel="stylesheet" href="../../static/staticCSS/toastr.min.css"/>
-    <link rel="stylesheet" href="../../static/staticCSS/font-awesome.min.css"/>
-    <link rel="stylesheet" href="../../static/css/segment.css">
-    <link rel="stylesheet" href="../../static/css/fileUD.css">
+    <link rel="stylesheet" href="/staticCSS/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/staticCSS/toastr.min.css"/>
+    <link rel="stylesheet" href="/staticCSS/font-awesome.min.css"/>
+    <link rel="stylesheet" href="/css/segment.css">
+    <link rel="stylesheet" href="/css/fileUD.css">
     <!--../../static-->
 </head>
 <body>
@@ -38,15 +40,23 @@
 
     </div>
 
-    <div class="row" id="upFile">
-       <div class="col-sm-1 col-md-3"></div>
-       <div class="col-sm-7 col-md-5">
-           <div class="input-group">
-               <span class="input-group-addon" id="sizing-addon1">上传分词文件(txt)</span>
-               <input type="file" accept=".txt" class="form-control" placeholder="Username" aria-describedby="sizing-addon1">
-           </div>
-       </div>
-    </div>
+    <!--<form method="post" id="fileForm"  enctype="multipart/form-data" >-->
+    <form method="post" action="/file/upload" id="fileForm"  enctype="multipart/form-data" @submit.prevent="uploadFile">
+    <!--<form method="post" action="/file/upload" id="fileForm"  enctype="multipart/form-data" @submit.prevent="uploadFile">-->
+        <div class="row" id="upFile">
+            <div class="col-sm-1 col-md-3"></div>
+            <div class="col-sm-7 col-md-5">
+                <div class="input-group">
+                    <span class="input-group-addon" id="sizing-addon1">上传分词文件(txt)</span>
+                    <input type="file" accept=".txt" id="segmentFileInput" class="form-control"  aria-describedby="sizing-addon1" name="file"/>
+                </div>
+            </div>
+            <div class="col-sm-4 col-md-4">
+                <input type="submit"  class="btn btn-info"></input>
+            </div>
+        </div>
+    </form>
+
 
 
     <div id="showDicts">
@@ -66,16 +76,36 @@
             </thead>
             <tbody>
             <tr v-for="dictFile in dictFiles">
-                <td>{{dictFile.name}}.txt</td>
-                <td>{{dictFile.name}}.txt</td>
-                <td>{{dictFile.size}}</td>
+                <td>{{dictFile.name}}</td>
+                <td>{{dictFile.name}}</td>
+                <td>{{dictFile.size}}KB</td>
                 <td>
-                    <button class="btn btn-default" v-on:click="downLoad(dictFile)">下载</button>
+                    <button type="button" class="btn btn-default" v-on:click="downLoad(dictFile)">下载</button>
                 </td>
             </tr>
 
             </tbody>
         </table>
+        <div id="showNo" style="width: 100%;align-items: center;text-align: center;font-family: 楷体;font-size: 25px;padding-bottom: 15px;color: #761c19;display: none;">
+            <!--<span style="align-items:center;font-family: 宋体">自定义分词文件</span>-->
+            没有自定义分词文件
+        </div>
+    </div>
+
+    <div class="modal fade" id="confirmCoverModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <h2 style="font-family: 宋体">已经存在同名文件，是否覆盖原有文件？</h2>
+                    <!--<h3 style="color: #761c19">请确认用户退还衣服后再点击确认</h3>-->
+                    <!--<h3 style="color: red">删除后后不可恢复</h3>-->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button v-on:click="confirmCover" type="button" class="btn btn-danger">确认删除</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
     </div>
 </div>
 </body>

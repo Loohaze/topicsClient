@@ -5,6 +5,7 @@ import com.nju.topics.domain.DictFileInfo;
 import com.nju.topics.service.Dict;
 import com.nju.topics.service.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -12,6 +13,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
+
+@Component
 public class FileServiceImpl implements FileService {
 
     @Autowired
@@ -24,7 +27,7 @@ public class FileServiceImpl implements FileService {
         File segFolder=new File(folder);
         if (!segFolder.exists() || !segFolder.isDirectory()){
             segFolder.mkdirs();
-            return null;
+
         }
 
         File[] files=segFolder.listFiles();
@@ -41,7 +44,7 @@ public class FileServiceImpl implements FileService {
         File dictFolder=new File(folder);
         if(!dictFolder.exists() || !dictFolder.isDirectory()){
             dictFolder.mkdirs();
-            return null;
+
         }
 
         File[] files=dictFolder.listFiles();
@@ -58,29 +61,37 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public String uploadSegmentFile(MultipartFile file) {
-        String name=file.getName();
+        String name=file.getOriginalFilename();
+        System.out.println(name);
         ArrayList<String> existFileNames=getAllSegmentFile();
         boolean flag=false;
-        for(int i=0;i<existFileNames.size();i++){
-            if (name.equals(existFileNames.get(i))){
-                flag=true;
-                break;
+        if(existFileNames!=null && existFileNames.size()>0){
+            for(int i=0;i<existFileNames.size();i++){
+                if (name.equals(existFileNames.get(i))){
+                    flag=true;
+                    break;
+                }
             }
         }
+
         if (flag){
             String originFilePath=config.getUploadPath()+name;
             File originFile=new File(originFilePath);
             originFile.delete();
         }
-
         String filePath=config.getUploadPath()+name;
         File newSegFile=new File(filePath);
+
+        String folder=config.getDownloadPath();
+        File dictFolder=new File(folder);
+        if(!dictFolder.exists() || !dictFolder.isDirectory()){
+            dictFolder.mkdirs();
+
+        }
         String dictPath=config.getDownloadPath()+name;
         File dictFile=new File(dictPath);
-        if (!dictFile.exists()){
-            dictFile.mkdir();
-        }
         try {
+            dictFile.createNewFile();
             file.transferTo(newSegFile);
             return "success";
         }catch (IOException e){

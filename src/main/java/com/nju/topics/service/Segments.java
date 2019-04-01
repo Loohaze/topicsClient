@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface Segments {
 
-    public List<Segment> getAllSegments();
+    public List<Segment> getAllSegments(String segName);
 }

@@ -10,4 +10,9 @@ public class StartController {
     public String start(){
         return "seg/segment";
     }
+
+    @RequestMapping("/file")
+    public String fileManage(){
+        return "file/fileUpDown";
+    }
 }

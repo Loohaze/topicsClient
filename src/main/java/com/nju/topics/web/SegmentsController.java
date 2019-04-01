@@ -3,6 +3,7 @@ package com.nju.topics.web;
 import com.nju.topics.domain.Segment;
 import com.nju.topics.service.Segments;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,8 +19,8 @@ public class SegmentsController {
         this.segments = segments;
     }
 
-    @GetMapping("/getSegments")
-    public List<Segment> getSegments(){
-        return segments.getAllSegments();
+    @GetMapping("/getSegments/{segName}")
+    public List<Segment> getSegments(@PathVariable("segName")String segName){
+        return segments.getAllSegments(segName);
     }
 }

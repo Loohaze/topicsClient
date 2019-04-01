@@ -23,11 +23,13 @@ public class SegmentsImpl implements Segments {
     }
 
     @Override
-    public List<Segment> getAllSegments() {
+    public List<Segment> getAllSegments(String segName) {
         List<Segment> result = new ArrayList<>();
         File segmentsFile = null;
         try {
-            segmentsFile = ResourceUtils.getFile(config.getSegmentsPath());
+            String segPath=config.getUploadPath()+segName;
+            System.out.println("请求获取分词文件：路径是——"+segPath);
+            segmentsFile = ResourceUtils.getFile(segPath);
 //            segmentsFile = ResourceUtils.getFile("classpath:documents/segments.txt");
             if (segmentsFile.exists()) {
 

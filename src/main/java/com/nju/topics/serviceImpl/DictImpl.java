@@ -23,12 +23,13 @@ public class DictImpl implements Dict {
     }
 
     @Override
-    public void addWord(String word) {
+    public void addWord(String dictName,String word) {
 
         HashMap<String, Integer> dictMap = new HashMap<>();
         File dict = null;
         try {
-            dict = ResourceUtils.getFile(config.getDictPath());
+            String dictPath=config.getDownloadPath()+dictName;
+            dict = ResourceUtils.getFile(dictPath);
 //            dict = new File("src/main/resources/dictFile/dict.txt");
             if (dict.exists()) {
                 InputStreamReader read = new InputStreamReader(new FileInputStream(dict), "utf8");
@@ -56,12 +57,13 @@ public class DictImpl implements Dict {
     }
 
     @Override
-    public List<String> getAllWords() {
+    public List<String> getAllWords(String dictName) {
         List<String> result = new ArrayList<>();
         File dict = null;
 
         try {
-            dict = ResourceUtils.getFile(config.getDictPath());
+            String dictPath=config.getDownloadPath()+dictName;
+            dict = ResourceUtils.getFile(dictPath);
 //            dict = new File("src/main/resources/dictFile/dict.txt");
             if (dict.exists()) {
                 InputStreamReader read = new InputStreamReader(new FileInputStream(dict), "utf8");
@@ -83,11 +85,12 @@ public class DictImpl implements Dict {
     }
 
     @Override
-    public void deleteWord(String word) {
+    public void deleteWord(String dictName,String word) {
         HashMap<String,Integer> dictMap = new HashMap<>();
         File dict = null;
         try {
-            dict = ResourceUtils.getFile(config.getDictPath());
+            String dictPath=config.getDownloadPath()+dictName;
+            dict = ResourceUtils.getFile(dictPath);
 //            dict = new File("src/main/resources/dictFile/dict.txt");
             if (dict.exists()) {
                 InputStreamReader read = new InputStreamReader(new FileInputStream(dict), "utf8");

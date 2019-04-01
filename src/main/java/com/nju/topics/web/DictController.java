@@ -15,18 +15,18 @@ public class DictController {
         this.dict = dict;
     }
 
-    @GetMapping("/getDict")
-    public List<String> getAllWords() {
-        return dict.getAllWords();
+    @GetMapping("/getDict/{dictName}")
+    public List<String> getAllWords(@PathVariable("dictName")String dictName) {
+        return dict.getAllWords(dictName);
     }
 
-    @PostMapping("/addDict/{newSeg}")
-    public void addWord(@PathVariable("newSeg") String word) {
-        dict.addWord(word);
+    @PostMapping("/addDict/{dictName}/{newSeg}")
+    public void addWord(@PathVariable("dictName")String dictName,@PathVariable("newSeg") String word) {
+        dict.addWord(dictName,word);
     }
 
-    @PostMapping("/delete/{seg}")
-    public void deleteWord(@PathVariable("seg") String word) {
-        dict.deleteWord(word);
+    @PostMapping("/delete/{dictName}/{seg}")
+    public void deleteWord(@PathVariable("dictName")String dictName,@PathVariable("seg") String word) {
+        dict.deleteWord(dictName,word);
     }
 }

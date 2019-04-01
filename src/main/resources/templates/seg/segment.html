@@ -41,6 +41,20 @@
 
     <div class="segLeft">
         <div id="segmentShow">
+            <div class="row" style="width: 102%;margin-left: -3.2%;">
+                <div class="col-xs-1"></div>
+                <div class="col-xs-9 segParts">
+                    <span>选择分词文件</span>
+                    <div class="btn-group">
+                        <select name="year" id="segFileSelect" class="btn btn-default dropdown-toggle" v-on:change="segSelect">
+                            <option v-for="file in segmentFiles" v-bind:value=file>{{file}}</option>
+
+                        </select>
+                    </div>
+                </div>
+                <div class="col-xs-1"></div>
+            </div>
+
             <div class="row pre-scrollable" id="showSegScroll">
                 <div v-for="segment in segments" id="segShow">
                     <div id="eachSeg">
