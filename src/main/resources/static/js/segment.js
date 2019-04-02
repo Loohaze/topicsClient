@@ -1,6 +1,14 @@
+
 window.onload=function () {
-    segmentTrain();
+    var vueT=segmentTrain();
+    // $("#showSegScroll").mouseup(function () {
+    //     console.log(window.getSelection?window.getSelection():document.selection.createRange().text);
+    //     vueT.newName=window.getSelection?window.getSelection():document.selection.createRange().text;
+    //     console.log("vueT.newName:"+vueT.newName);
+    // });
+
 }
+
 
 function segmentTrain() {
     var segVue=new Vue({
@@ -12,7 +20,10 @@ function segmentTrain() {
             oneSeg:"",
             newName:"",
             myselfSegments:["CSSCI"],
-            deleteSegment:""
+            deleteSegment:"",
+            inputNumber:1,
+            input:"input",
+            addInput:"addInput"
         },
         methods:{
             segSelect:function () {
@@ -41,25 +52,84 @@ function segmentTrain() {
                 $("#addModal").modal();
             },
             confirmModify:function () {
-                if(this.newName==""){
-                    toastr.error("分词不得为空！")
-
-                }else{
-                    flag=true;
-                    for(i=0;i<this.myselfSegments.length;i++){
-                        if(this.myselfSegments[i]==this.newName){
-                            flag=false;
+                var canTransfer=true;
+                var hasNewSeg=false;
+                var newSegs=[];
+                for(i=1;i<=this.inputNumber;i++){
+                    var inputI=$("#input"+''+i).val();
+                    if (inputI!="" && inputI!=null && inputI.length>0){
+                        hasNewSeg=true;
+                        var hasNoDuplicate=true;
+                        //检测重复
+                        if(newSegs.length>0){
+                            var j=0;
+                            for(j=0;j<newSegs.length;j++){
+                                if(newSegs[j]==inputI){
+                                    hasNoDuplicate=false;
+                                    canTransfer=false;
+                                    break;
+                                }
+                            }
+                        }
+                        if (hasNoDuplicate){
+                            newSegs.push(inputI);
+                        }else {
+                            toastr.error("存在重复词："+inputI);
                         }
                     }
-                    if(flag){
-                        this.$http.post("/dict/addDict/"+this.nowSegmentFile+"/"+this.newName);
-                        // this.$http.post("http://localhost:8080/dict/addDict/"+this.newName);
-                        this.myselfSegments.push(this.newName);
+                    if(!canTransfer){
+                        break;
+                    }
+                }
+                if(canTransfer){
+                    if(newSegs.length>0){
+                        console.log("新的分词列表:"+newSegs);
+                        this.$http.post("/dict/addDictList/"+this.nowSegmentFile+"/"+newSegs);
+                        var k=0;
+                        for(k=0;k<newSegs.length;k++){
+                            this.myselfSegments.push(newSegs[k]);
+
+                        }
                         $("#addModal").map(function () {
                             if (!$(this).is(":hidden")){
                                 $(this).modal('hide');
                             }
                         });
+                        this.inputNumber=1;
+                        $("#input1").val("");
+                        toastr.success("已成功添加新的分词！")
+                    }else{
+                        toastr.error("至少添加一个新的分词！")
+                    }
+                }
+
+
+            },
+            changeInput:function () {
+                console.log("开始选择")
+                console.log("选中文字："+window.getSelection?window.getSelection():document.selection.createRange().text);
+                $("#singleInputText").val(window.getSelection?window.getSelection():document.selection.createRange().text);
+            },
+            singleSegAdd:function () {
+                var singleSegName=$("#singleInputText").val();
+                console.log("添加单独分词之前已有分词是:"+this.myselfSegments);
+                if(singleSegName==""){
+                    toastr.error("分词不得为空！")
+
+                }
+                else{
+                    console.log("添加单独分词:"+singleSegName);
+                    flag=true;
+                    for(i=0;i<this.myselfSegments.length;i++){
+                        if(this.myselfSegments[i]==singleSegName){
+                            flag=false;
+                        }
+                    }
+                    if(flag){
+                        this.$http.post("/dict/addDict/"+this.nowSegmentFile+"/"+singleSegName);
+                        // this.$http.post("http://localhost:8080/dict/addDict/"+this.newName);
+                        this.myselfSegments.push(singleSegName);
+                        $("#singleInputText").val("");
                         toastr.success("已成功添加新的分词！")
                     }else {
                         toastr.warning("已经存在该分词")
@@ -87,6 +157,13 @@ function segmentTrain() {
                         $(this).modal('hide');
                     }
                 });
+            },
+            addInputDom:function () {
+                this.inputNumber=this.inputNumber+1;
+            },
+            hideInput:function (n) {
+                $("#addInput"+''+n).hide();
+                $("#input"+''+n).val("");
             }
         },
         mounted:function () {
@@ -120,5 +197,6 @@ function segmentTrain() {
             });
 
         }
-    })
+    });
+    return segVue;
 }

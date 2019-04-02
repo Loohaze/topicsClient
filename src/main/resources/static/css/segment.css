@@ -139,6 +139,23 @@
     margin-bottom: -20px;
 }
 
+.singleSegmentInput{
+    margin-top: 5px;
+    -web-kit-appearance:none;
+    -moz-appearance: none;
+    width: 70%;
+    height: 40px;
+    overflow: auto;
+    resize: none;
+    outline: none;
+    /*border:1px solid transparent;*/
+}
+
+.singleSegmentInputGroup{
+    margin-top: 5px;
+    width: 90%;
+}
+
 .mySegmentLi{
     border-radius: 0px;
 }
@@ -161,5 +178,14 @@
 
 .addInputButton:hover{
     background-color: #999999;
+}
+
+.deleteHref{
+    font-size: smaller;
+    color: #9d9d9d;
+}
+
+.deleteHref:hover{
+    color: #c7254e;
 }
 

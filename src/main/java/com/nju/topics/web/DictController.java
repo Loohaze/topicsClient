@@ -25,6 +25,11 @@ public class DictController {
         dict.addWord(dictName,word);
     }
 
+    @PostMapping("/addDictList/{dictName}/{newSeg}")
+    public void addWordList(@PathVariable("dictName")String dictName,@PathVariable("newSeg")List<String> word) {
+        dict.addWordList(dictName,word);
+    }
+
     @PostMapping("/delete/{dictName}/{seg}")
     public void deleteWord(@PathVariable("dictName")String dictName,@PathVariable("seg") String word) {
         dict.deleteWord(dictName,word);
