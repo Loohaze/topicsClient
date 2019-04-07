@@ -36,6 +36,11 @@
     /*background-color: #BD362F;*/
 }
 
+#reRunButton{
+    float: right;
+    margin-top: 5px;
+}
+
 #showSegScroll{
     overflow-x: hidden;
     overflow-y: auto;

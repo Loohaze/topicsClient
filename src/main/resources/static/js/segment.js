@@ -1,12 +1,6 @@
 
 window.onload=function () {
-    var vueT=segmentTrain();
-    // $("#showSegScroll").mouseup(function () {
-    //     console.log(window.getSelection?window.getSelection():document.selection.createRange().text);
-    //     vueT.newName=window.getSelection?window.getSelection():document.selection.createRange().text;
-    //     console.log("vueT.newName:"+vueT.newName);
-    // });
-
+    segmentTrain();
 }
 
 
@@ -44,7 +38,23 @@ function segmentTrain() {
                     else {
                         this.myselfSegments=[];
                     }
-                })
+                });
+                toastr.success("加载文件"+this.nowSegmentFile+"成功")
+            },
+            rerun:function(){
+              this.$http.get("/seg/rerun/"+this.nowSegmentFile)
+                  .then(function (response) {
+                      console.log("rerun console:");
+                      console.log(response);
+                  if (response.bodyText=="success"){
+                      toastr.success("成功提交任务，五分钟后可以刷新页面显示新的分词结果！")
+                  } else{
+                      toastr.error(response.bodyText);
+                  }
+              }).catch(function (e) {
+                  console.log(e);
+                  toastr.error("错误"+e.status+":"+e.statusText);
+              })
             },
             chooseAddSeg:function (segment) {
                 this.oneSeg=segment;
@@ -119,18 +129,24 @@ function segmentTrain() {
                 }
                 else{
                     console.log("添加单独分词:"+singleSegName);
-                    flag=true;
+                    var flag=true;
                     for(i=0;i<this.myselfSegments.length;i++){
                         if(this.myselfSegments[i]==singleSegName){
                             flag=false;
                         }
                     }
                     if(flag){
-                        this.$http.post("/dict/addDict/"+this.nowSegmentFile+"/"+singleSegName);
-                        // this.$http.post("http://localhost:8080/dict/addDict/"+this.newName);
-                        this.myselfSegments.push(singleSegName);
-                        $("#singleInputText").val("");
-                        toastr.success("已成功添加新的分词！")
+                        this.$http.post("/dict/addDict/"+this.nowSegmentFile+"/"+singleSegName)
+                            .then(function () {
+                                this.myselfSegments.push(singleSegName);
+                                $("#singleInputText").val("");
+                                toastr.success("已成功添加新的分词！");
+                            })
+                            .catch(function (e) {
+                            console.log(e);
+                            toastr.error("错误"+e.status+":"+e.statusText);
+                        });
+
                     }else {
                         toastr.warning("已经存在该分词")
                     }
@@ -168,34 +184,37 @@ function segmentTrain() {
         },
         mounted:function () {
             this.$http.get("/file/getAllSegmentFiles").then(function (response) {
-                if (response.data!=null && response.data.length>0){
-                    this.segmentFiles=response.data;
-                    this.nowSegmentFile=this.segmentFiles[0];
+                    if (response.data!=null && response.data.length>0){
+                        this.segmentFiles=response.data;
+                        this.nowSegmentFile=this.segmentFiles[0];
 
-                    console.log("mounted:/seg/getSegments/"+this.nowSegmentFile)
-                    // this.$http.get("/seg/getSegments").then(function (response) {
-                    segVue.$http.get("/seg/getSegments/"+segVue.nowSegmentFile).then(function (response) {
-                        if(response.data.length>0){
-                            segVue.segments=response.data;
-                        }else{
-                            segVue.segments=[{title:"分词文件为空",segments:["请通知管理人员上传分词文件"]}];
-                        }
-                    });
-                    // this.$http.get("/dict/getDict").then(function (response) {
-                    segVue.$http.get("/dict/getDict/"+segVue.nowSegmentFile).then(function (response) {
-                        if (response.data.length>0){
-                            segVue.myselfSegments=response.data;
-                        }
-                        else {
-                            segVue.myselfSegments=[];
-                        }
-                    });
-                }
-                else {
-                    this.segments=[{title:"没有分词文件",segments:["请通知管理人员上传分词文件"]}];
-                }
+                        console.log("mounted:/seg/getSegments/"+this.nowSegmentFile)
+                        // this.$http.get("/seg/getSegments").then(function (response) {
+                        segVue.$http.get("/seg/getSegments/"+segVue.nowSegmentFile).then(function (response) {
+                            if(response.data.length>0){
+                                segVue.segments=response.data;
+                            }else{
+                                segVue.segments=[{title:"分词文件为空",segments:["请通知管理人员上传分词文件"]}];
+                            }
+                        });
+                        // this.$http.get("/dict/getDict").then(function (response) {
+                        segVue.$http.get("/dict/getDict/"+segVue.nowSegmentFile).then(function (response) {
+                            if (response.data.length>0){
+                                segVue.myselfSegments=response.data;
+                            }
+                            else {
+                                segVue.myselfSegments=[];
+                            }
+                        });
+                        toastr.success("加载文件"+this.nowSegmentFile+"成功")
+                    }
+                    else {
+                        this.segments=[{title:"没有分词文件",segments:["请通知管理人员上传分词文件"]}];
+                    }
+                }).catch(function (e) {
+                console.log(e);
+                toastr.error("错误"+e.status+":"+e.statusText);
             });
-
         }
     });
     return segVue;
