@@ -32,6 +32,9 @@ public class Config {
     @Value("${dict.backup.path}")
     private String dictBackUpPath;
 
+    @Value("${rerun.file.name}")
+    private String reRunFileName;
+
     private Long lastPyRunTime=new Date("1999/01/01 00:00:00").getTime();
 
 
@@ -69,5 +72,9 @@ public class Config {
 
     public void setLastPyRunTime(Long lastPyRunTime) {
         this.lastPyRunTime = lastPyRunTime;
+    }
+
+    public String getReRunFileName() {
+        return reRunFileName;
     }
 }

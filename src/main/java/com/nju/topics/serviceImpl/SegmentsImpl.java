@@ -137,7 +137,7 @@ public class SegmentsImpl implements Segments {
             }
         }
 
-        String cmd="python "+config.getPyPath()+"rerun.py"+" "+oldSegPath+" "+oldDictPath;
+        String cmd="python "+config.getPyPath()+config.getReRunFileName()+" "+oldSegPath+" "+oldDictPath;
         Process process;
         try {
             System.out.println("开始执行命令:"+cmd);
