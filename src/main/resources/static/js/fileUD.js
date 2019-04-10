@@ -15,11 +15,12 @@ function fileUD() {
         },
         methods:{
             downLoad:function (dictFile) {
-                // console.log("/file/download/"+dictFile.name)
-                // this.$http.get("/file/download/"+dictFile.name).then(function (response) {
-                //
-                // });
+
                 window.open("/file/download/"+dictFile.name);
+            },
+            downLoadSource:function (dictFile) {
+
+                window.open("/file/downloadSource/"+dictFile.name);
             },
             uploadFile:function () {
                 var fileName=$("#segmentFileInput").val();

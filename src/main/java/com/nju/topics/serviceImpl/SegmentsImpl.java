@@ -29,7 +29,7 @@ public class SegmentsImpl implements Segments {
         File segmentsFile = null;
         try {
             String segPath=config.getUploadPath()+segName;
-            System.out.println("请求获取分词文件：路径是——"+segPath);
+//            System.out.println("请求获取分词文件：路径是——"+segPath);
             segmentsFile = ResourceUtils.getFile(segPath);
 //            segmentsFile = ResourceUtils.getFile("classpath:documents/segments.txt");
             if (segmentsFile.exists()) {

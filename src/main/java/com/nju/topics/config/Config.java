@@ -35,6 +35,9 @@ public class Config {
     @Value("${rerun.file.name}")
     private String reRunFileName;
 
+    @Value("${statistics.parent.folder}")
+    private String statisticsFolder;
+
     private Long lastPyRunTime=new Date("1999/01/01 00:00:00").getTime();
 
 
@@ -76,5 +79,9 @@ public class Config {
 
     public String getReRunFileName() {
         return reRunFileName;
+    }
+
+    public String getStatisticsFolder() {
+        return statisticsFolder;
     }
 }

@@ -15,4 +15,9 @@ public class StartController {
     public String fileManage(){
         return "file/fileUpDown";
     }
+
+    @RequestMapping("/statistics")
+    public String statistics(){
+        return "statistics/statistics";
+    }
 }
