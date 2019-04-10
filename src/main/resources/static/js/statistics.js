@@ -19,7 +19,157 @@ function statistics() {
         },
         methods:{
             statisticsDictSelect:function () {
-                
+                var statisticsFolder=$("#countDictSelect").val();
+                this.nowDict=statisticsFolder;
+
+                this.generalShowChart.showLoading();
+                this.authorKeyShowChart.showLoading();
+                this.venueKeyShowChart.showLoading();
+                this.institutionKeyShowChart.showLoading();
+
+                this.$http.get("/statistics/getAllKeyWords/"+this.nowDict+"/author").then(function (response) {
+
+                    var resAuthorDict=response.data;
+                    var authorKey=[];
+                    var authorNum=[];
+                    var venueNum=[];
+                    var institutionNum=[];
+
+                    for(var i=0;i<resAuthorDict.length;i++){
+                        var item=resAuthorDict[i];
+
+                        authorKey.push(item.key);
+                        authorNum.push(item.num);
+                    }
+                    this.allKeyWords=authorKey;
+                    this.searchResult=authorKey;
+                    this.nowKeyWord=authorKey[0];
+                    // statisticsVue.generalShowChart.setOption({
+                    //     xAxis:{
+                    //         data:authorKey
+                    //     },
+                    //     series:[{
+                    //         name:'author',
+                    //         data:authorNum
+                    //     }]
+                    // });
+
+                    statisticsVue.$http.get("/statistics/getAllKeyWords/"+this.nowDict+"/venue").then(function (venueResponse) {
+                        console.log("获取到了venue数据");
+                        var venueList=venueResponse.data;
+
+                        for(var i=0;i<authorKey.length;i++){
+                            for(var j=0;j<venueList.length;j++){
+                                if (venueList[j].key==authorKey[i]){
+                                    venueNum.push(venueList[j].num);
+                                    break;
+                                }
+                            }
+                        }
+
+                        statisticsVue.$http.get("/statistics/getAllKeyWords/"+this.nowDict+"/institution").then(function (institutionResponse) {
+                            console.log("获取到了institution数据");
+                            var institutionList=institutionResponse.data;
+                            for(var i=0;i<authorKey.length;i++){
+                                for(var j=0;j<institutionList.length;j++){
+                                    if (institutionList[j].key==authorKey[i]){
+                                        institutionNum.push(institutionList[j].num);
+                                        break;
+                                    }
+                                }
+                            }
+
+                            statisticsVue.generalShowChart.hideLoading();
+                            console.log("开始重绘总览图");
+                            statisticsVue.generalShowChart.setOption({
+
+                                xAxis:{
+                                    data:authorKey
+                                },
+                                series:[
+                                    {name:'author',type:'line',data:authorNum},
+                                    {name:'venue',type:'line',data:venueNum},
+                                    {name:'institution',type:'line',data:institutionNum}
+                                ]
+                            });
+
+
+                            statisticsVue.$http.get("/statistics/getOneKeyAttribute/"+statisticsVue.nowDict+"/author"+"/"+statisticsVue.nowKeyWord).then(function (authorResponse) {
+                                var authorKeyList=authorResponse.data;
+                                var authorNameKey=[];
+                                var authorNameNum=[];
+                                for(var i=0;i<authorKeyList.length;i++){
+                                    authorNameKey.push(authorKeyList[i].key);
+                                    authorNameNum.push(authorKeyList[i].num);
+                                }
+                                statisticsVue.authorKeyShowChart.hideLoading();
+                                console.log("开始重绘authorKey图");
+                                statisticsVue.authorKeyShowChart.setOption({
+                                    title: {
+                                        text: '作者词频分布:'+this.nowKeyWord
+                                    },
+                                    xAxis:{
+                                        data:authorNameKey
+                                    },
+                                    series:[
+                                        {name:'author',type:'line',data:authorNameNum},
+
+                                    ]
+                                });
+                            })
+                            statisticsVue.$http.get("/statistics/getOneKeyAttribute/"+statisticsVue.nowDict+"/venue"+"/"+statisticsVue.nowKeyWord).then(function (venueResponse) {
+                                var venueKeyList=venueResponse.data;
+                                var venueNameKey=[];
+                                var venueNameNum=[];
+                                for(var i=0;i<venueKeyList.length;i++){
+                                    venueNameKey.push(venueKeyList[i].key);
+                                    venueNameNum.push(venueKeyList[i].num);
+                                }
+                                statisticsVue.venueKeyShowChart.hideLoading();
+                                console.log("开始重绘venueKey图");
+                                statisticsVue.venueKeyShowChart.setOption({
+                                    title: {
+                                        text: '期刊词频分布:'+this.nowKeyWord
+                                    },
+                                    xAxis:{
+                                        data:venueNameKey
+                                    },
+                                    series:[
+                                        {name:'venue',type:'line',data:venueNameNum},
+                                    ]
+                                });
+                            })
+                            statisticsVue.$http.get("/statistics/getOneKeyAttribute/"+statisticsVue.nowDict+"/institution"+"/"+statisticsVue.nowKeyWord).then(function (institutionResponse) {
+                                var institutionKeyList=institutionResponse.data;
+                                var institutionNameKey=[];
+                                var institutionNameNum=[];
+                                for(var i=0;i<institutionKeyList.length;i++){
+                                    institutionNameKey.push(institutionKeyList[i].key);
+                                    institutionNameNum.push(institutionKeyList[i].num);
+                                }
+                                statisticsVue.institutionKeyShowChart.hideLoading();
+                                console.log("开始重绘institutionKey图");
+                                statisticsVue.institutionKeyShowChart.setOption({
+                                    title: {
+                                        text: '机构词频分布:'+this.nowKeyWord
+                                    },
+                                    xAxis:{
+                                        data:institutionNameKey
+                                    },
+                                    series:[
+                                        {name:'institution',type:'line',data:institutionNameNum}
+                                    ]
+                                });
+                            })
+
+                        });
+
+                    });
+
+                    toastr.success("切换成功");
+                })
+
+
             },
             searchKeyWord:function(){
                 var searchWord=$("#searchInput").val();
@@ -187,6 +337,7 @@ function statistics() {
             this.venueKeyShowChart=echarts.init(document.getElementById('venueKeyShowChart'));
             this.institutionKeyShowChart=echarts.init(document.getElementById('institutionKeyShowChart'));
 
+            //初始化echarts
             this.generalShowChart.setOption({
                 title: {
                     text: '词频总览'
@@ -325,7 +476,7 @@ function statistics() {
                     this.statisticsDicts=dicts;
                     this.nowDict=this.statisticsDicts[0];
 
-                    statisticsVue.$http.get("/statistics/getAllKeyWords/"+this.nowDict+"/author").then(function (response) {
+                    statisticsVue.$http.get("/statistics/getAllKeyWords/"+statisticsVue.nowDict+"/author").then(function (response) {
 
                         var resAuthorDict=response.data;
                         var authorKey=[];
