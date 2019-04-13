@@ -3,6 +3,7 @@ package com.nju.topics.serviceImpl;
 import com.nju.topics.config.Config;
 import com.nju.topics.service.Dict;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
 
@@ -12,15 +13,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Service
+@Component
 public class DictImpl implements Dict {
 
     @Autowired
     private Config config;
 
-    @Autowired
-    public DictImpl() {
-    }
+//    @Autowired
+//    public DictImpl() {
+//    }
 
     @Override
     public void addWord(String dictName,String word) {
@@ -93,6 +94,8 @@ public class DictImpl implements Dict {
 
     @Override
     public List<String> getAllWords(String dictName) {
+//        System.out.println("Now get dicts from folder:"+config.getDownloadPath());
+//        System.out.println("Now get dicts from file:"+dictName);
         List<String> result = new ArrayList<>();
         File dict = null;
 

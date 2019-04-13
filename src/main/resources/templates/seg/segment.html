@@ -73,7 +73,7 @@
                     <div id="eachSeg">
                         <div class="row">
                             <div class="col-xs-1"></div>
-                            <div class="col-xs-8 segTitle">题目：{{segment.title}}</div>
+                            <div class="col-xs-8 segTitle"><label>题目：{{segment.title}}</label></div>
                             <div class="col-xs-3">
                                 <button class="btn btn-default btnSeg" v-on:click="chooseAddSeg(segment)">修改分词</button>
                             </div>
@@ -81,7 +81,7 @@
                         <div class="row">
                             <div class="col-xs-1"></div>
                             <div class="col-xs-9 segParts">
-                                <i v-for="eachS in segment.segments">{{eachS}}/</i>
+                                <span v-for="eachS in segment.segments">{{eachS}}/</span>
                                 <!--{{segment.segments}}-->
                             </div>
                             <div class="col-xs-1"></div>
@@ -123,7 +123,7 @@
             <div class="modal-content">
                 <div class="modal-body">
                     <div class="row modalShow segTitle">&nbsp;&nbsp;&nbsp;题目:{{oneSeg.title}}</div>
-                    <div class="row modalShow segTitleM">&nbsp;&nbsp;&nbsp;分词:<i v-for="eachOS in oneSeg.segments">{{eachOS}}/</i></div>
+                    <div class="row modalShow segParts">&nbsp;&nbsp;&nbsp;分词:<span v-for="eachOS in oneSeg.segments">{{eachOS}}/</span></div>
                     <div class="row">
                         <div class="col-xs-8">
 

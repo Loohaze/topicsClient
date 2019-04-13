@@ -38,6 +38,12 @@ public class Config {
     @Value("${statistics.parent.folder}")
     private String statisticsFolder;
 
+    @Value("${dict.log.path}")
+    private String dictLogPath;
+
+    @Value("${rerun.interval.minutes}")
+    private int intervalTime;
+
     private Long lastPyRunTime=new Date("1999/01/01 00:00:00").getTime();
 
 
@@ -83,5 +89,13 @@ public class Config {
 
     public String getStatisticsFolder() {
         return statisticsFolder;
+    }
+
+    public String getDictLogPath() {
+        return dictLogPath;
+    }
+
+    public int getIntervalTime() {
+        return intervalTime;
     }
 }

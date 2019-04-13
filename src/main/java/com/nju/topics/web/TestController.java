@@ -1,13 +1,43 @@
 package com.nju.topics.web;
 
+import com.nju.topics.entity.HistoryPaperInfo;
+import com.nju.topics.repository.HistoryRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.ArrayList;
 
 @RestController
 public class TestController {
 
-    @RequestMapping("")
-    public String test(){
-        return "Test";
+    @Autowired
+    private HistoryRepository historyRepository;
+
+//    @RequestMapping("")
+//    public String test(){
+//        return "Test";
+//    }
+
+    @RequestMapping("/testSave")
+    public String testSave(){
+        HistoryPaperInfo historyPaperInfo=new HistoryPaperInfo();
+        historyPaperInfo.setPaperId("11G0532010050001");
+        historyPaperInfo.setPaperName("中国近代资本主义的学术研究与中学历史教学");
+        ArrayList<String> authors=new ArrayList<>();
+        authors.add("薛伟强");
+        authors.add("高景龙");
+//        historyPaperInfo.setPaperAuthors(authors);
+        historyPaperInfo.setPaperVenueNo("11G0532010050");
+
+        HistoryPaperInfo historyPaperInfo1=new HistoryPaperInfo();
+        historyPaperInfo1.setPaperId("11G0532010050002");
+        historyPaperInfo1.setPaperName("中国近代资本主义的学术研究与中学历史教学1");
+//        historyPaperInfo.setPaperAuthors(authors);
+        historyPaperInfo1.setPaperVenueNo("11G05320100502");
+
+        historyRepository.save(historyPaperInfo1);
+
+        return "success";
     }
 }

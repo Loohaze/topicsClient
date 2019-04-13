@@ -1,6 +1,7 @@
 package com.nju.topics.web;
 
 import com.nju.topics.service.Dict;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -9,11 +10,12 @@ import java.util.List;
 @RequestMapping("/dict")
 public class DictController {
 
-    private final Dict dict;
+    @Autowired
+    private Dict dict;
 
-    public DictController(Dict dict) {
-        this.dict = dict;
-    }
+//    public DictController(Dict dict) {
+//        this.dict = dict;
+//    }
 
     @GetMapping("/getDict/{dictName}")
     public List<String> getAllWords(@PathVariable("dictName")String dictName) {
