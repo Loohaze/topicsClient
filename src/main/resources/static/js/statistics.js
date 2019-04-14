@@ -81,16 +81,51 @@ function statistics() {
 
                             statisticsVue.generalShowChart.hideLoading();
                             console.log("开始重绘总览图");
+
+                            //避免卡顿，只绘制前70个关键词
+                            var authorArry = [];
+                            for(var i=0;i<70;i++){
+                                var item={
+                                    name: authorKey[i],
+                                    value: authorNum[i],
+                                }
+                                authorArry.push(item);
+                            }
+
                             statisticsVue.generalShowChart.setOption({
 
-                                xAxis:{
-                                    data:authorKey
-                                },
                                 series:[
-                                    {name:'author',type:'line',data:authorNum},
-                                    {name:'venue',type:'line',data:venueNum},
-                                    {name:'institution',type:'line',data:institutionNum}
+                                    {name:'keyword',
+                                        type:'graph',
+                                        layout: 'force',
+                                        data:authorArry,
+                                        roam:true,
+                                        symbolSize: function (data) {
+                                            // console.log(data);
+                                            return Math.round(15 + data * 80 / authorNum[0]);
+                                        },
+                                        label: {
+                                            normal: {
+                                                show: true
+                                            },
+                                            emphasis: {
+                                                show: true,
+                                                formatter: function (param) {
+                                                    return param.name;
+                                                },
+                                                color: 'black'
+                                            }
+                                        },
+                                        force:{
+                                            repulsion: 65
+                                        }
+                                    },
                                 ]
+                            });
+
+                            //鼠标点击事件
+                            statisticsVue.generalShowChart.on('click', function (params) {
+                                // console.log(params.name);
                             });
 
 
@@ -337,6 +372,9 @@ function statistics() {
             this.venueKeyShowChart=echarts.init(document.getElementById('venueKeyShowChart'));
             this.institutionKeyShowChart=echarts.init(document.getElementById('institutionKeyShowChart'));
 
+
+            var categories = ['author','venue','institution'];
+
             //初始化echarts
             this.generalShowChart.setOption({
                 title: {
@@ -346,7 +384,7 @@ function statistics() {
                     trigger: 'item'
                 },
                 legend: {
-
+                    data: categories,
                 },
                 grid: {
                     left: '3%',
@@ -354,20 +392,20 @@ function statistics() {
                     bottom: '3%',
                     containLabel: true
                 },
-                xAxis: {
-                    data: []
-                },
-                yAxis: {},
+                // xAxis: {
+                //     data: []
+                // },
+                // yAxis: {},
                 series: [{
-                    type: 'line',
+                    type: 'graph',
                 }],
-                dataZoom: [
-                    {   // 这个dataZoom组件，默认控制x轴。
-                        type: 'slider', // 这个 dataZoom 组件是 slider 型 dataZoom 组件
-                        start: 0,      // 左边在 10% 的位置。
-                        end: 1         // 右边在 60% 的位置。
-                    }
-                ],
+                // dataZoom: [
+                //     {   // 这个dataZoom组件，默认控制x轴。
+                //         type: 'slider', // 这个 dataZoom 组件是 slider 型 dataZoom 组件
+                //         start: 0,      // 左边在 10% 的位置。
+                //         end: 1         // 右边在 60% 的位置。
+                //     }
+                // ],
             });
             this.authorKeyShowChart.setOption({
                 title: {
@@ -530,17 +568,54 @@ function statistics() {
 
                                 statisticsVue.generalShowChart.hideLoading();
                                 console.log("开始重绘总览图");
+
+                                //避免卡顿，只绘制前70个关键词
+                                var authorArry = [];
+                                for(var i=0;i<70;i++){
+                                    var item={
+                                        name: authorKey[i],
+                                        value: authorNum[i],
+                                    }
+                                    authorArry.push(item);
+                                }
+
                                 statisticsVue.generalShowChart.setOption({
 
-                                    xAxis:{
-                                                data:authorKey
-                                    },
                                     series:[
-                                        {name:'author',type:'line',data:authorNum},
-                                        {name:'venue',type:'line',data:venueNum},
-                                        {name:'institution',type:'line',data:institutionNum}
+                                        {name:'keyword',
+                                            type:'graph',
+                                            layout: 'force',
+                                            data:authorArry,
+                                            roam:true,
+                                            symbolSize: function (data) {
+                                                // console.log(data);
+                                                return Math.round(15 + data * 80 / authorNum[0]);
+                                            },
+                                            label: {
+                                                normal: {
+                                                    show: true
+                                                },
+                                                emphasis: {
+                                                    show: true,
+                                                    formatter: function (param) {
+                                                        return param.name;
+                                                    },
+                                                    color: 'black'
+                                                }
+                                            },
+                                            force:{
+                                                repulsion: 65
+                                            }
+                                        },
                                     ]
                                 });
+
+                                //鼠标点击事件
+                                statisticsVue.generalShowChart.on('click', function (params) {
+                                    // console.log(params.name);
+                                });
+
+
 
 
                                 statisticsVue.$http.get("/statistics/getOneKeyAttribute/"+statisticsVue.nowDict+"/author"+"/"+statisticsVue.nowKeyWord).then(function (authorResponse) {
