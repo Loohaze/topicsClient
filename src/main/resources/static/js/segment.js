@@ -41,6 +41,23 @@ function segmentTrain() {
                 });
                 toastr.success("加载文件"+this.nowSegmentFile+"成功")
             },
+            getDictLog:function(){
+                this.$http.get("/file/getDictLog/"+this.nowSegmentFile).then(function (response) {
+                    console.log(response);
+                    if (response.bodyText=="NOFILE"){
+                        toastr.error("该文件暂未生成ReRun日志");
+                    } else{
+                        nwin = window.open("about:blank","_blank"); //新开空白标签页
+                        nwin.document.write(response.bodyText); //将内容写入新标签页
+                        nwin.focus(); //获取焦点
+                        nwin.document.title="日志文件-"+this.nowSegmentFile;
+
+                    }
+                }).catch(function (e) {
+                    console.log(e);
+                    toastr.error("错误"+e.status+":"+e.statusText);
+                });
+            },
             rerun:function(){
               this.$http.get("/seg/rerun/"+this.nowSegmentFile)
                   .then(function (response) {

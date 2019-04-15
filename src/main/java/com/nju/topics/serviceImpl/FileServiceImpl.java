@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -108,5 +109,35 @@ public class FileServiceImpl implements FileService {
             file.delete();
         }
         return "success";
+    }
+
+    @Override
+    public String getDictLog(String name) {
+        String res="";
+        String dictLogPath=config.getDictLogPath()+name;
+        File dictLogFile=new File(dictLogPath);
+        if (!dictLogFile.exists()){
+            return "NOFILE";
+        }
+
+        String line="";
+        BufferedReader bufferedReader=null;
+        try {
+            bufferedReader=new BufferedReader(new FileReader(dictLogFile));
+            while ((line=bufferedReader.readLine())!=null){
+                res=res+line+"<br/>";
+            }
+        }catch (IOException e){
+            e.printStackTrace();
+        }finally {
+            try {
+                bufferedReader.close();
+
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+
+        return res;
     }
 }

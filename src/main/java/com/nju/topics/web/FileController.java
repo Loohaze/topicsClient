@@ -134,5 +134,10 @@ public class FileController {
         }
     }
 
+    @RequestMapping("/getDictLog/{fileName}")
+    @ResponseBody
+    public String getDictLog(@PathVariable("fileName")String fileName){
+        return fileService.getDictLog(fileName);
+    }
 
 }

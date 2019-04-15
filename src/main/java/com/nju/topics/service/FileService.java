@@ -14,4 +14,6 @@ public interface FileService {
     public String uploadSegmentFile(MultipartFile file);
 
     public String deleteSegmentFile(String name);
+
+    public String getDictLog(String name);
 }

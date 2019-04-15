@@ -21,7 +21,7 @@
 #generalShowChart{
     margin-left: 5%;
 
-    height: 400px;
+    height: 600px;
     width: 80%;
     min-width: 500px;
 }
@@ -46,4 +46,13 @@
     height: 400px;
     width: 80%;
     min-width: 500px;
+}
+
+#authorTreeChart{
+    margin-left: 5%;
+    margin-top: 45px;
+    height: 600px;
+    width: 95%;
+    font-size: 16px;
+    /*min-width: 500px;*/
 }

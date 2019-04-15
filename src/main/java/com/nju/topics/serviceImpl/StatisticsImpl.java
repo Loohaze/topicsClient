@@ -83,9 +83,18 @@ public class StatisticsImpl implements StatisticsService {
         }
 
         for (Map.Entry<String,Integer> entry:sortMap.entrySet()){
+            boolean inNone=false;
+            for(int i=0;i<config.noStatisticsWords.length;i++){
+                if (config.noStatisticsWords[i].equals(entry.getKey())){
+                    inNone=true;
+                    break;
+                }
+            }
+            if (!inNone){
+                StatisticsInfo statisticsInfo=new StatisticsInfo(entry.getKey(),entry.getValue());
+                statisticsInfos.add(statisticsInfo);
+            }
 
-            StatisticsInfo statisticsInfo=new StatisticsInfo(entry.getKey(),entry.getValue());
-            statisticsInfos.add(statisticsInfo);
         }
         return statisticsInfos;
     }
@@ -136,8 +145,17 @@ public class StatisticsImpl implements StatisticsService {
         }
         for (Map.Entry<String,Integer> entry:sortMap.entrySet()){
 
-            StatisticsInfo statisticsInfo=new StatisticsInfo(entry.getKey(),entry.getValue());
-            statisticsInfos.add(statisticsInfo);
+            boolean inNone=false;
+            for(int i=0;i<config.noStatisticsWords.length;i++){
+                if (config.noStatisticsWords[i].equals(entry.getKey())){
+                    inNone=true;
+                    break;
+                }
+            }
+            if (!inNone){
+                StatisticsInfo statisticsInfo=new StatisticsInfo(entry.getKey(),entry.getValue());
+                statisticsInfos.add(statisticsInfo);
+            }
         }
         return statisticsInfos;
     }

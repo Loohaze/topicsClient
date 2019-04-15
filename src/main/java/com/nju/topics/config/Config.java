@@ -44,6 +44,9 @@ public class Config {
     @Value("${rerun.interval.minutes}")
     private int intervalTime;
 
+    public String[] noStatisticsWords={"的","发展","研究","新","史学","历史","中","年","中心","时期","综述","史","笔谈","关系","°","世纪","º","ƒ","年代","古代",
+    "∑","µ","±","Œ","÷","与","–","体系", "相关","∂","区域", "∞","π","Ω", "Ã", "™","Ø","≥","∫","ø","¡","œ","2013","˙","À","∆","ÿ"};
+
     private Long lastPyRunTime=new Date("1999/01/01 00:00:00").getTime();
 
 

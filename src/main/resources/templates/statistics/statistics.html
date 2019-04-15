@@ -79,8 +79,25 @@
 
     <div id="generalShowChart"></div>
     <div class="singleChart" id="authorKeyShowChart"></div>
-    <div class="singleChart" id="venueKeyShowChart"></div>
+    <div class="singleChart" id="venueKeyShowChart" style="display: none;"></div>
     <div class="singleChart" id="institutionKeyShowChart"></div>
+
+    <div class="modal fade" id="authorTreeModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">{{nowAuthor}}——文章图谱</div>
+                <div class="modal-body">
+                    <div class="row">最常合作作者</div>
+                    <div v-for="relation in relationList" class="col-xs-6">{{relation.key}}:{{relation.num}}</div>
+                    <div class="singleChart" id="authorTreeChart"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+
 </div>
 </body>
 </html>

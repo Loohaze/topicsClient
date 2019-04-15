@@ -12,10 +12,15 @@ function statistics() {
             authorKeyShowChart:"",
             venueKeyShowChart:"",
             institutionKeyShowChart:"",
+            authorTreeChart:"",
             allKeyWords:[],
             searchResult:[],
             showSearchRes:false,
-            nowKeyWord:""
+            nowKeyWord:"",
+            nowAuthor:"",
+            showTree:false,
+            relationList:[]
+
         },
         methods:{
             statisticsDictSelect:function () {
@@ -147,7 +152,7 @@ function statistics() {
                                         data:authorNameKey
                                     },
                                     series:[
-                                        {name:'author',type:'line',data:authorNameNum},
+                                        {name:'author',type:'line',smooth:true,data:authorNameNum},
 
                                     ]
                                 });
@@ -170,7 +175,7 @@ function statistics() {
                                         data:venueNameKey
                                     },
                                     series:[
-                                        {name:'venue',type:'line',data:venueNameNum},
+                                        {name:'venue',type:'line',smooth:true,data:venueNameNum},
                                     ]
                                 });
                             })
@@ -192,7 +197,7 @@ function statistics() {
                                         data:institutionNameKey
                                     },
                                     series:[
-                                        {name:'institution',type:'line',data:institutionNameNum}
+                                        {name:'institution',type:'line',smooth:true,data:institutionNameNum}
                                     ]
                                 });
                             })
@@ -239,7 +244,7 @@ function statistics() {
                                 data:authorNameKey
                             },
                             series:[
-                                {name:'author',type:'line',data:authorNameNum},
+                                {name:'author',type:'line',smooth:true,data:authorNameNum},
 
                             ]
                         });
@@ -262,7 +267,7 @@ function statistics() {
                                 data:venueNameKey
                             },
                             series:[
-                                {name:'venue',type:'line',data:venueNameNum},
+                                {name:'venue',type:'line',smooth:true,data:venueNameNum},
                             ]
                         });
                     })
@@ -284,7 +289,7 @@ function statistics() {
                                 data:institutionNameKey
                             },
                             series:[
-                                {name:'institution',type:'line',data:institutionNameNum}
+                                {name:'institution',type:'line',smooth:true,data:institutionNameNum}
                             ]
                         });
                     });
@@ -371,9 +376,10 @@ function statistics() {
             this.authorKeyShowChart=echarts.init(document.getElementById('authorKeyShowChart'));
             this.venueKeyShowChart=echarts.init(document.getElementById('venueKeyShowChart'));
             this.institutionKeyShowChart=echarts.init(document.getElementById('institutionKeyShowChart'));
-
+            // this.authorTreeChart=echarts.init(document.getElementById('authorTreeChart'));
 
             var categories = ['author','venue','institution'];
+
 
             //初始化echarts
             this.generalShowChart.setOption({
@@ -414,9 +420,7 @@ function statistics() {
                 tooltip: {
                     trigger: 'item'
                 },
-                legend: {
 
-                },
                 grid: {
                     left: '3%',
                     right: '4%',
@@ -445,9 +449,7 @@ function statistics() {
                 tooltip: {
                     trigger: 'item'
                 },
-                legend: {
 
-                },
                 grid: {
                     left: '3%',
                     right: '4%',
@@ -476,9 +478,6 @@ function statistics() {
                 tooltip: {
                     trigger: 'item'
                 },
-                legend: {
-
-                },
                 grid: {
                     left: '3%',
                     right: '4%',
@@ -500,6 +499,8 @@ function statistics() {
                 //     }
                 // ],
             });
+
+
 
             this.generalShowChart.showLoading();
             this.authorKeyShowChart.showLoading();
@@ -528,6 +529,7 @@ function statistics() {
                             authorKey.push(item.key);
                             authorNum.push(item.num);
                         }
+                        console.log(authorKey);
                         statisticsVue.allKeyWords=authorKey;
                         statisticsVue.searchResult=authorKey;
                         statisticsVue.nowKeyWord=authorKey[0];
@@ -611,9 +613,9 @@ function statistics() {
                                 });
 
                                 //鼠标点击事件
-                                statisticsVue.generalShowChart.on('click', function (params) {
-                                    // console.log(params.name);
-                                });
+                                // statisticsVue.generalShowChart.on('click', function (params) {
+                                //     // console.log(params.name);
+                                // });
 
 
 
@@ -636,7 +638,7 @@ function statistics() {
                                             data:authorNameKey
                                         },
                                         series:[
-                                            {name:'author',type:'line',data:authorNameNum},
+                                            {name:'author',type:'line',smooth:true,data:authorNameNum},
 
                                         ]
                                     });
@@ -659,7 +661,7 @@ function statistics() {
                                             data:venueNameKey
                                         },
                                         series:[
-                                            {name:'venue',type:'line',data:venueNameNum},
+                                            {name:'venue',type:'line',smooth:true,data:venueNameNum},
                                         ]
                                     });
                                 })
@@ -681,7 +683,7 @@ function statistics() {
                                             data:institutionNameKey
                                         },
                                         series:[
-                                            {name:'institution',type:'line',data:institutionNameNum}
+                                            {name:'institution',type:'line',smooth:true,data:institutionNameNum}
                                         ]
                                     });
                                 })
@@ -694,6 +696,163 @@ function statistics() {
                 }
                 toastr.success("初始化成功");
 
+            });
+
+            this.generalShowChart.on("click",{dataType: 'node'}, function (params){
+                console.log("params.name:"+params.name);
+                statisticsVue.nowKeyWord=params.name;
+                statisticsVue.authorKeyShowChart.showLoading();
+                statisticsVue.venueKeyShowChart.showLoading();
+                statisticsVue.institutionKeyShowChart.showLoading();
+                statisticsVue.$http.get("/statistics/getOneKeyAttribute/"+statisticsVue.nowDict+"/author"+"/"+statisticsVue.nowKeyWord).then(function (authorResponse) {
+                    var authorKeyList=authorResponse.data;
+                    var authorNameKey=[];
+                    var authorNameNum=[];
+                    for(var i=0;i<authorKeyList.length;i++){
+                        authorNameKey.push(authorKeyList[i].key);
+                        authorNameNum.push(authorKeyList[i].num);
+                    }
+                    statisticsVue.authorKeyShowChart.hideLoading();
+                    console.log("开始重绘authorKey图");
+                    statisticsVue.authorKeyShowChart.setOption({
+                        title: {
+                            text: '作者词频分布:'+this.nowKeyWord
+                        },
+                        xAxis:{
+                            data:authorNameKey
+                        },
+                        series:[
+                            {name:'author',type:'line',smooth:true,data:authorNameNum},
+
+                        ]
+                    });
+                })
+                statisticsVue.$http.get("/statistics/getOneKeyAttribute/"+statisticsVue.nowDict+"/venue"+"/"+statisticsVue.nowKeyWord).then(function (venueResponse) {
+                    var venueKeyList=venueResponse.data;
+                    var venueNameKey=[];
+                    var venueNameNum=[];
+                    for(var i=0;i<venueKeyList.length;i++){
+                        venueNameKey.push(venueKeyList[i].key);
+                        venueNameNum.push(venueKeyList[i].num);
+                    }
+                    statisticsVue.venueKeyShowChart.hideLoading();
+                    console.log("开始重绘venueKey图");
+                    statisticsVue.venueKeyShowChart.setOption({
+                        title: {
+                            text: '期刊词频分布:'+this.nowKeyWord
+                        },
+                        xAxis:{
+                            data:venueNameKey
+                        },
+                        series:[
+                            {name:'venue',type:'line',smooth:true,data:venueNameNum},
+                        ]
+                    });
+                })
+                statisticsVue.$http.get("/statistics/getOneKeyAttribute/"+statisticsVue.nowDict+"/institution"+"/"+statisticsVue.nowKeyWord).then(function (institutionResponse) {
+                    var institutionKeyList=institutionResponse.data;
+                    var institutionNameKey=[];
+                    var institutionNameNum=[];
+                    for(var i=0;i<institutionKeyList.length;i++){
+                        institutionNameKey.push(institutionKeyList[i].key);
+                        institutionNameNum.push(institutionKeyList[i].num);
+                    }
+                    statisticsVue.institutionKeyShowChart.hideLoading();
+                    console.log("开始重绘institutionKey图");
+                    statisticsVue.institutionKeyShowChart.setOption({
+                        title: {
+                            text: '机构词频分布:'+this.nowKeyWord
+                        },
+                        xAxis:{
+                            data:institutionNameKey
+                        },
+                        series:[
+                            {name:'institution',type:'line',smooth:true,data:institutionNameNum}
+                        ]
+                    });
+                });
+                toastr.success("获取关键词："+params.name);
+
+            });
+
+            this.authorKeyShowChart.on("click",function (params) {
+
+                console.log("params.name:"+params.name);
+                statisticsVue.nowAuthor=params.name;
+                var treeData;
+
+                statisticsVue.$http.get("/statistics/getAuthorPapersTreeData/"+statisticsVue.nowAuthor).then(function (value) {
+                    console.log(value);
+                    treeData=value.data;
+                });
+                statisticsVue.$http.get("/statistics/getRelativeAuthors/"+statisticsVue.nowAuthor).then(function (value) {
+                    console.log(value);
+                    if (value.data.length>0){
+                        statisticsVue.relationList=value.data;
+                    } else{
+                        statisticsVue.relationList=[{key:"没有合作作者",num:0}];
+                    }
+                });
+                setTimeout(function () {
+                    statisticsVue.authorTreeChart=echarts.init(document.getElementById('authorTreeChart'));
+
+                    statisticsVue.authorTreeChart.setOption({
+                        tooltip: {
+                            trigger: 'item',
+                            triggerOn: 'mousemove'
+                        },
+                        textStyle: {
+                            fontSize: 18
+                        },
+                        grid: {
+                            left: '3%',
+                            right: '20%',
+                            bottom: '3%',
+                            containLabel: true
+                        },
+                        series: [
+                            {
+                                type: 'tree',
+
+                                data:[treeData],
+
+                                top: '1%',
+                                left: '7%',
+                                bottom: '1%',
+                                right: '45%',
+
+                                symbolSize: 7,
+
+                                label: {
+                                    normal: {
+                                        position: 'left',
+                                        verticalAlign: 'middle',
+                                        align: 'right',
+                                        fontSize: 9
+                                    }
+                                },
+
+                                leaves: {
+                                    label: {
+                                        normal: {
+                                            position: 'right',
+                                            verticalAlign: 'middle',
+                                            align: 'left',
+                                            fontsize: 15
+                                        }
+                                    }
+                                },
+
+                                expandAndCollapse: true,
+                                animationDuration: 550,
+                                animationDurationUpdate: 750
+                            }
+                        ]
+                    });
+
+                },1000)
+                $("#authorTreeModal").modal();
+                // statisticsVue.showTree=true;
             })
 
         }
