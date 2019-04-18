@@ -5,7 +5,7 @@ import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
-//@Document(indexName = "historypapers" ,type = "history")
+//@Document(indexName = config.getHistoryPaperIndex() ,type = "history")
 public class HistoryPapersEntity {
 
 //    @Id
