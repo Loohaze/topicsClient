@@ -20,4 +20,9 @@ public class StartController {
     public String statistics(){
         return "statistics/statistics";
     }
+
+    @RequestMapping("/tags")
+    public String tags(){
+        return "tag/tag";
+    }
 }

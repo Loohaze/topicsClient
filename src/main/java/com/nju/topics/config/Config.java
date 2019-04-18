@@ -44,6 +44,22 @@ public class Config {
     @Value("${rerun.interval.minutes}")
     private int intervalTime;
 
+    @Value( "${history.paper.index}")
+    private String historyPaperIndex;
+    @Value( "${history.paper.type}")
+    private String historyPaperType;
+    @Value( "${history.author.index}")
+    private String historyAuthorIndex;
+    @Value( "${history.author.type}")
+    private String historyAuthorType;
+    @Value( "${history.reference.index}")
+    private String historyReferenceIndex;
+    @Value( "${history.reference.type}")
+    private String historyReferenceType;
+
+    @Value("${pair.file.path}")
+    private String pairFilePath;
+
     public String[] noStatisticsWords={"的","发展","研究","新","史学","历史","中","年","中心","时期","综述","史","笔谈","关系","°","世纪","º","ƒ","年代","古代",
     "∑","µ","±","Œ","÷","与","–","体系", "相关","∂","区域", "∞","π","Ω", "Ã", "™","Ø","≥","∫","ø","¡","œ","2013","˙","À","∆","ÿ"};
 
@@ -100,5 +116,33 @@ public class Config {
 
     public int getIntervalTime() {
         return intervalTime;
+    }
+
+    public String getHistoryAuthorIndex() {
+        return historyAuthorIndex;
+    }
+
+    public String getHistoryAuthorType() {
+        return historyAuthorType;
+    }
+
+    public String getHistoryPaperIndex() {
+        return historyPaperIndex;
+    }
+
+    public String getHistoryPaperType() {
+        return historyPaperType;
+    }
+
+    public String getHistoryReferenceIndex() {
+        return historyReferenceIndex;
+    }
+
+    public String getHistoryReferenceType() {
+        return historyReferenceType;
+    }
+
+    public String getPairFilePath() {
+        return pairFilePath;
     }
 }

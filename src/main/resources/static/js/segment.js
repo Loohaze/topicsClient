@@ -68,10 +68,7 @@ function segmentTrain() {
                   } else{
                       toastr.error(response.bodyText);
                   }
-              }).catch(function (e) {
-                  console.log(e);
-                  toastr.error("错误"+e.status+":"+e.statusText);
-              });
+              })
             },
             chooseAddSeg:function (segment) {
                 this.oneSeg=segment;
