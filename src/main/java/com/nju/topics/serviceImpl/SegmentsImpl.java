@@ -46,14 +46,16 @@ public class SegmentsImpl implements Segments {
                 String line = null;
                 while ((line = bufferedReader.readLine()) != null) {
                     String[] segData = line.split(" ");
-                    String[] segs = segData[1].split(",");
+                    if (segData.length==2){
+                        String[] segs = segData[1].split(",");
+                        Segment segment = new Segment();
+                        segment.setTitle(segData[0]);
+                        List<String> segments = new ArrayList<>();
+                        Collections.addAll(segments, segs);
+                        segment.setSegments(segments);
+                        result.add(segment);
+                    }
 
-                    Segment segment = new Segment();
-                    segment.setTitle(segData[0]);
-                    List<String> segments = new ArrayList<>();
-                    Collections.addAll(segments, segs);
-                    segment.setSegments(segments);
-                    result.add(segment);
                 }
             }
         } catch (IOException e) {

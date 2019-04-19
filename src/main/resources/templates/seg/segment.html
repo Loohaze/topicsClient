@@ -124,10 +124,13 @@
 
     <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog">
+
             <div class="modal-content">
-                <div class="modal-body">
+                <div class="modal-header">
                     <div class="row modalShow segTitle">&nbsp;&nbsp;&nbsp;题目:{{oneSeg.title}}</div>
-                    <div class="row modalShow segParts">&nbsp;&nbsp;&nbsp;分词:<span v-for="eachOS in oneSeg.segments">{{eachOS}}/</span></div>
+                    <div class="row modalShow segPartsM">&nbsp;&nbsp;&nbsp;分词:<span v-for="eachOS in oneSeg.segments">{{eachOS}}/</span></div>
+                </div>
+                <div class="modal-body">
                     <div class="row">
                         <div class="col-xs-8">
 
