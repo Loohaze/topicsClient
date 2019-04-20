@@ -48,6 +48,12 @@
     width: 99%;
     height: 7000px;
 }
+#showSegScroll2{
+    overflow-x: hidden;
+    overflow-y: auto;
+    width: 99%;
+    height: 7000px;
+}
 
 .segTitle{
     font-size: 1.3em;

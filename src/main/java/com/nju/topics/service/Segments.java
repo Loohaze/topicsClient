@@ -9,4 +9,6 @@ public interface Segments {
     public List<Segment> getAllSegments(String segName);
 
     public String reRunPy(String segFileName);
+
+    public List<Segment> getPreSegments(String segName);
 }

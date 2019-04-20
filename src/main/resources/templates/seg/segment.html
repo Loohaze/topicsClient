@@ -72,7 +72,25 @@
 
             </div>
 
-            <div class="row pre-scrollable" id="showSegScroll" v-on:MouseUp="changeInput">
+            <div class="row pre-scrollable" id="showSegScroll2"  v-show="!showRealSeg">
+                        <div class="row">
+                            <div class="col-xs-1"></div>
+                            <div class="col-xs-8 segTitle"><label>正在加载分词文件，请稍等...</label></div>
+                            <div class="col-xs-3">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-1"></div>
+                            <div class="col-xs-9 segParts">
+                                <span>大文件加载，请耐心等待...</span>
+                                <!--{{segment.segments}}-->
+                            </div>
+                            <div class="col-xs-1"></div>
+                        </div>
+
+            </div>
+
+            <div class="row pre-scrollable" id="showSegScroll" v-on:MouseUp="changeInput" v-show="showRealSeg">
                 <div v-for="segment in segments" id="segShow">
                     <div id="eachSeg">
                         <div class="row">

@@ -44,7 +44,52 @@ public class SegmentsImpl implements Segments {
                 BufferedReader bufferedReader = new BufferedReader(read);
 
                 String line = null;
+                long tempNum=0;
                 while ((line = bufferedReader.readLine()) != null) {
+                    tempNum=tempNum+1;
+                    if (tempNum>=config.getPreGetNum()){
+                        String[] segData = line.split(" ");
+                        if (segData.length==2){
+                            String[] segs = segData[1].split(",");
+                            Segment segment = new Segment();
+                            segment.setTitle(segData[0]);
+                            List<String> segments = new ArrayList<>();
+                            Collections.addAll(segments, segs);
+                            segment.setSegments(segments);
+                            result.add(segment);
+                        }
+
+                    }
+
+                }
+
+                bufferedReader.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+    @Override
+    public List<Segment> getPreSegments(String segName) {
+        List<Segment> result = new ArrayList<>();
+        File segmentsFile = null;
+        try {
+            String segPath=config.getUploadPath()+segName;
+//            System.out.println("请求获取分词文件：路径是——"+segPath);
+            segmentsFile = ResourceUtils.getFile(segPath);
+//            segmentsFile = ResourceUtils.getFile("classpath:documents/segments.txt");
+            if (segmentsFile.exists()) {
+
+                InputStreamReader read = new InputStreamReader(new FileInputStream(segmentsFile),"utf8");
+                BufferedReader bufferedReader = new BufferedReader(read);
+
+                String line = null;
+                long tempNum=0;
+                while ((line = bufferedReader.readLine()) != null && tempNum<config.getPreGetNum()) {
+                    tempNum=tempNum+1;
                     String[] segData = line.split(" ");
                     if (segData.length==2){
                         String[] segs = segData[1].split(",");
@@ -57,6 +102,7 @@ public class SegmentsImpl implements Segments {
                     }
 
                 }
+                bufferedReader.close();
             }
         } catch (IOException e) {
             e.printStackTrace();

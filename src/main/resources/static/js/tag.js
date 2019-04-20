@@ -166,7 +166,21 @@ function tag() {
         mounted:function () {
             this.$http.get("/tags/getAllTags")
                 .then(function (value) {
-                    this.tagInfos=value.data;
+                    this.tagInfos=[];
+                    var responseData=value.data;
+                    if (responseData.length<100){
+                        this.tagInfos=responseData;
+                    } else{
+                        for(var i=0;i<100;i++){
+                            (this.tagInfos).push(responseData[i]);
+                        }
+                        setTimeout(function () {
+                            for(var j=100;j<responseData.length;j++){
+                                (tagVue.tagInfos).push(responseData[j]);
+                            }
+                        },3000);
+                    }
+                    // this.tagInfos=value.data;
                 })
                 .catch(function (e) {
                 console.log(e);

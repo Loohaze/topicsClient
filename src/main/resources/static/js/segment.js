@@ -17,19 +17,21 @@ function segmentTrain() {
             deleteSegment:"",
             inputNumber:1,
             input:"input",
-            addInput:"addInput"
+            addInput:"addInput",
+            showSegPartEC:"",
+            showRealSeg:false
         },
         methods:{
             segSelect:function () {
+                console.log("切换了分词文件");
+                this.showRealSeg=false;
+                console.log("隐藏真正的分词文件"+this.showRealSeg);
+                this.segments=[];
+                this.segments = [{title:"正在加载分词文件...",segments:["请稍等..."]}];
+                $("#reRunButton").attr("disabled",true);
                 this.nowSegmentFile=$("#segFileSelect").val();
-                console.log("切换文件，新文件请求URL：/seg/getSegments/"+this.nowSegmentFile)
-                this.$http.get("/seg/getSegments/"+this.nowSegmentFile).then(function (response) {
-                    if(response.data.length>0){
-                        this.segments=response.data;
-                    }else{
-                        this.segments=[{title:"分词文件为空",segments:["请通知管理人员上传分词文件"]}];
-                    }
-                });
+                console.log("切换文件，新文件请求URL：/seg/getSegments/"+this.nowSegmentFile);
+                this.getAllSegmentsData();
                 // this.$http.get("/dict/getDict").then(function (response) {
                 this.$http.get("/dict/getDict/"+this.nowSegmentFile).then(function (response) {
                     if (response.data.length>0){
@@ -39,7 +41,7 @@ function segmentTrain() {
                         this.myselfSegments=[];
                     }
                 });
-                toastr.success("加载文件"+this.nowSegmentFile+"成功")
+                // toastr.success("加载文件"+this.nowSegmentFile+"成功")
             },
             getDictLog:function(){
                 this.$http.get("/file/getDictLog/"+this.nowSegmentFile).then(function (response) {
@@ -136,7 +138,6 @@ function segmentTrain() {
             },
             singleSegAdd:function () {
                 var singleSegName=$("#singleInputText").val();
-                console.log("添加单独分词之前已有分词是:"+this.myselfSegments);
                 if(singleSegName==""){
                     toastr.error("分词不得为空！")
 
@@ -194,9 +195,67 @@ function segmentTrain() {
             hideInput:function (n) {
                 $("#addInput"+''+n).hide();
                 $("#input"+''+n).val("");
+            },
+            getAllSegmentsData:function () {
+                segVue.$http.get("/seg/getPreSegments/"+segVue.nowSegmentFile).then(function (preResponse){
+                    segVue.segments=[];
+                    if (preResponse.data.length>0){
+                        segVue.segments=preResponse.data;
+                        setTimeout(function () {
+                            segVue.showRealSeg=true;
+                            console.log("显示真正的分词文件"+segVue.showRealSeg);
+                        },500);
+                        if (segVue.segments.length>98){
+                            segVue.$http.get("/seg/getSegments/"+segVue.nowSegmentFile).then(function (response) {
+                                console.log("开始加载剩余dict");
+                                if(response.data!=null && response.data.length>0){
+                                    var responseData=response.data;
+                                    var oneTimeShowNum=500;
+                                    var pushTime=Math.floor(responseData.length/oneTimeShowNum);
+                                    console.log("需要加载的完整次数:"+pushTime);
+                                    setTimeout(function () {
+                                        if (pushTime>0){
+                                            for(var indexNum=0;indexNum<pushTime;indexNum++){
+                                                (function (indexNum) {
+                                                    setTimeout(function () {
+                                                        var begin=indexNum*oneTimeShowNum;
+                                                        var end=begin+oneTimeShowNum;
+                                                        for(var temp=begin;temp<end;temp++){
+                                                            (segVue.segments).push(responseData[temp]);
+                                                        }
+                                                        indexNum++;
+                                                        console.log("加载次数："+indexNum+"时间:"+(new Date().toLocaleString()));
+                                                    },500);
+                                                })(indexNum)
+                                            }
+                                        }
+                                        var lastRest=responseData.length%oneTimeShowNum;
+                                        if (lastRest>0){
+                                            var restBegin=pushTime*oneTimeShowNum;
+                                            var restEnd=responseData.length;
+                                            for(var restTemp=restBegin;restTemp<restEnd;restTemp++){
+                                                (segVue.segments).push(responseData[restTemp]);
+                                            }
+                                        }
+
+
+                                        $("#reRunButton").attr("disabled",false);
+                                        toastr.success("加载文件"+segVue.nowSegmentFile+"成功");
+                                    },3000);
+
+                                }
+                            });
+
+                        }
+                    } else{
+                        segVue.segments=[{title:"分词文件为空",segments:["请通知管理人员上传分词文件"]}];
+                    }
+
+                });
             }
         },
         mounted:function () {
+            $("#reRunButton").attr("disabled",true);
             this.$http.get("/file/getAllSegmentFiles").then(function (response) {
                     if (response.data!=null && response.data.length>0){
                         this.segmentFiles=response.data;
@@ -204,13 +263,7 @@ function segmentTrain() {
 
                         console.log("mounted:/seg/getSegments/"+this.nowSegmentFile)
                         // this.$http.get("/seg/getSegments").then(function (response) {
-                        segVue.$http.get("/seg/getSegments/"+segVue.nowSegmentFile).then(function (response) {
-                            if(response.data.length>0){
-                                segVue.segments=response.data;
-                            }else{
-                                segVue.segments=[{title:"分词文件为空",segments:["请通知管理人员上传分词文件"]}];
-                            }
-                        });
+                        this.getAllSegmentsData();
                         // this.$http.get("/dict/getDict").then(function (response) {
                         segVue.$http.get("/dict/getDict/"+segVue.nowSegmentFile).then(function (response) {
                             if (response.data.length>0){
@@ -220,7 +273,6 @@ function segmentTrain() {
                                 segVue.myselfSegments=[];
                             }
                         });
-                        toastr.success("加载文件"+this.nowSegmentFile+"成功")
                     }
                     else {
                         this.segments=[{title:"没有分词文件",segments:["请通知管理人员上传分词文件"]}];

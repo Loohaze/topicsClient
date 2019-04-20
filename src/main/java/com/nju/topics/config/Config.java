@@ -60,6 +60,8 @@ public class Config {
     @Value("${pair.file.path}")
     private String pairFilePath;
 
+    private long preGetNum=100;
+
     public String[] noStatisticsWords={"的","发展","研究","新","史学","历史","中","年","中心","时期","综述","史","笔谈","关系","°","世纪","º","ƒ","年代","古代",
     "∑","µ","±","Œ","÷","与","–","体系", "相关","∂","区域", "∞","π","Ω", "Ã", "™","Ø","≥","∫","ø","¡","œ","2013","˙","À","∆","ÿ"};
 
@@ -144,5 +146,9 @@ public class Config {
 
     public String getPairFilePath() {
         return pairFilePath;
+    }
+
+    public long getPreGetNum() {
+        return preGetNum;
     }
 }

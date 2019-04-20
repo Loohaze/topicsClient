@@ -24,6 +24,11 @@ public class SegmentsController {
         return segments.getAllSegments(segName);
     }
 
+    @GetMapping("/getPreSegments/{segName}")
+    public List<Segment> getPreSegments(@PathVariable("segName")String segName){
+        return segments.getPreSegments(segName);
+    }
+
     @RequestMapping("/rerun/{segFileName}")
     public String reRunPy(@PathVariable("segFileName")String segFileName){
         return segments.reRunPy(segFileName);
