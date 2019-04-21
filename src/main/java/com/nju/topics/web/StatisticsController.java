@@ -38,14 +38,29 @@ public class StatisticsController {
     @RequestMapping("/getAllKeyWords/{dictName}/{attribute}")
     @ResponseBody
     public ArrayList<StatisticsInfo> getAllKeyWords(@PathVariable("dictName")String dictName, @PathVariable("attribute")String attribute){
-        return statisticsService.getAllKeyWords(dictName,attribute);
+        if(dictName.equals("historyES")){
+            return statisticsService.getAllKeyWordsByES();
+        }else{
+            return statisticsService.getAllKeyWords(dictName,attribute);
+        }
     }
 
     @RequestMapping("/getOneKeyAttribute/{dictName}/{attributeName}/{keyword}")
     @ResponseBody
     public ArrayList<StatisticsInfo> getOneKeyAttribute(@PathVariable("dictName")String dictName, @PathVariable("attributeName")String attributeName,
                                                         @PathVariable("keyword")String keyword){
-        return statisticsService.getOneAttribute(dictName,attributeName,keyword);
+        if(dictName.equals("historyES")){
+            if(attributeName.equals("author")){
+                return statisticsService.getAuthorAttributeByES(keyword);
+            }else if(attributeName.equals("institution")){
+                return  statisticsService.getInstitutionAttributeByES(keyword);
+            }else{
+                return null;
+            }
+        }else{
+            return statisticsService.getOneAttribute(dictName,attributeName,keyword);
+        }
+
     }
 
     @RequestMapping("/getPapersByName/{paperName}")

@@ -26,6 +26,12 @@ public interface StatisticsService {
      */
     public ArrayList<StatisticsInfo> getAllKeyWords(String dictName, String attributeName);
 
+    /**
+     * 获取ElasticSearch分词中所有关键词，按照词频从大到小排序
+     * @return 按照词频从大到小排序的HashMap
+     */
+    public ArrayList<StatisticsInfo> getAllKeyWordsByES();
+
     /***
      * 获取某一个文件夹下面某个属性的某个关键词的具体词频，比如说history2014 文件夹下面 history2014_author文件里面keyword1对应的具体词频
      * @param dictName
@@ -35,6 +41,19 @@ public interface StatisticsService {
      */
     public ArrayList<StatisticsInfo> getOneAttribute(String dictName,String attributeName,String keyWord);
 
+    /***
+     * 从ElasticSearch获取作者属性的某个关键词的具体词频
+     * @param keyword
+     * @return 按照词频从大到小排序的HashMap
+     */
+    public ArrayList<StatisticsInfo> getAuthorAttributeByES(String keyword);
+
+    /***
+     * 从ElasticSearch获取机构属性的某个关键词的具体词频
+     * @param keyword
+     * @return 按照词频从大到小排序的HashMap
+     */
+    public ArrayList<StatisticsInfo> getInstitutionAttributeByES(String keyword);
 
     /***
      * 获取某一个文件夹下面某个属性文件里面所有关键词的词频

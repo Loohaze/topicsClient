@@ -8,15 +8,16 @@ import com.nju.topics.entitysevice.HistoryPapersSerivce;
 import com.nju.topics.utils.MapValueComparator;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
-import org.elasticsearch.action.search.SearchRequest;
-import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.action.search.*;
 import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.Scroll;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
@@ -44,6 +45,69 @@ public class HistoryPapersImpl implements HistoryPapersSerivce {
 //    @Autowired
 //    private HistoryPapersRepository historyPapersRepository;
 
+
+    public List<HistoryPapersEntity> getAllPapers() {
+
+        List<HistoryPapersEntity> historyPapersEntities=new ArrayList<>();
+
+        BoolQueryBuilder boolBuilder = QueryBuilders.boolQuery();
+        boolBuilder.must(QueryBuilders.wildcardQuery("LYPM.keyword", "*"+""+"*"));
+        SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+        searchSourceBuilder.query(boolBuilder);
+
+        searchSourceBuilder.size(100); //max is 10000
+        SearchRequest searchRequest = new SearchRequest("historypapers");
+        searchRequest.source(searchSourceBuilder);
+
+        final Scroll scroll = new Scroll(TimeValue.timeValueMinutes(10L));
+        searchRequest.scroll(scroll);
+
+        SearchResponse searchResponse = null;
+        try {
+            searchResponse = restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        String scrollId = searchResponse.getScrollId();
+        SearchHit[] searchHits = searchResponse.getHits().getHits();
+
+        while (searchHits != null && searchHits.length > 0)
+        {
+
+            for (SearchHit s : searchHits) {
+                //Handle the hit...
+                HistoryPapersEntity historyPapersEntity=new HistoryPapersEntity();
+                historyPapersEntity.setSNO(String.valueOf(s.getSourceAsMap().get("SNO")));
+                historyPapersEntity.setLYPM(String.valueOf(s.getSourceAsMap().get("LYPM")));
+                historyPapersEntity.setBLPM(String.valueOf(s.getSourceAsMap().get("BLPM")));
+                historyPapersEntity.setQKNO(String.valueOf(s.getSourceAsMap().get("QKNO")));
+                historyPapersEntity.setBYC(String.valueOf(s.getSourceAsMap().get("BYC")));
+                historyPapersEntity.setNIAN(String.valueOf(s.getSourceAsMap().get("NIAN")));
+                historyPapersEntities.add(historyPapersEntity);
+            }
+
+            SearchScrollRequest scrollRequest = new SearchScrollRequest(scrollId);
+            scrollRequest.scroll(scroll);
+            try {
+                searchResponse = restHighLevelClient.scroll(scrollRequest, RequestOptions.DEFAULT);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            scrollId = searchResponse.getScrollId();
+            searchHits = searchResponse.getHits().getHits();
+
+        }
+
+        ClearScrollRequest clearScrollRequest = new ClearScrollRequest();
+        clearScrollRequest.addScrollId(scrollId);
+        try {
+            ClearScrollResponse clearScrollResponse = restHighLevelClient.clearScroll(clearScrollRequest, RequestOptions.DEFAULT);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return historyPapersEntities;
+    }
+
     @Override
     public List<HistoryPapersEntity> getHistoryPaperByName(String paperName) {
         List<HistoryPapersEntity> historyPapersEntities=new ArrayList<>();
@@ -53,7 +117,7 @@ public class HistoryPapersImpl implements HistoryPapersSerivce {
         SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
         sourceBuilder.query(boolBuilder);
         sourceBuilder.from(0);
-        sourceBuilder.size(100); // 获取记录数，默认10
+        sourceBuilder.size(500); // 获取记录数，默认10
 //        sourceBuilder.fetchSource(new String[] { "id", "name" }, new String[] {}); // 第一个是获取字段，第二个是过滤的字段，默认获取全部
         SearchRequest searchRequest = new SearchRequest(config.getHistoryPaperIndex());
 //        searchRequest.types(type);

@@ -9,6 +9,8 @@ import java.util.List;
 
 public interface HistoryPapersSerivce {
 
+    public List<HistoryPapersEntity> getAllPapers();
+
     public List<HistoryPapersEntity> getHistoryPaperByName(String paperName);
 
     public List<HistoryPapersEntity> getHistoryPapersByFuzzyName(String fuzzyName);

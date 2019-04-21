@@ -1,7 +1,11 @@
 package com.nju.topics.serviceImpl;
 
 import com.nju.topics.config.Config;
+import com.nju.topics.domain.Segment;
 import com.nju.topics.domain.StatisticsInfo;
+import com.nju.topics.entity.HistoryAuthorEntity;
+import com.nju.topics.entitysevice.HistoryAuthorsService;
+import com.nju.topics.service.Segments;
 import com.nju.topics.service.StatisticsService;
 import com.nju.topics.utils.MapValueComparator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +16,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 
 @Component
@@ -24,9 +25,18 @@ public class StatisticsImpl implements StatisticsService {
     @Autowired
     private Config config;
 
+    @Autowired
+    private Segments segmentsService;
+
+    @Autowired
+    private HistoryAuthorsService historyAuthorsService;
+
     @Override
     public ArrayList<String> getAllStatisticsDictNames() {
         ArrayList<String> allStatistics=new ArrayList<>();
+
+        allStatistics.add("historyES");
+
         File statisticsFolder=new File(config.getStatisticsFolder());
         if (statisticsFolder.exists() && statisticsFolder.isDirectory()){
             String[] allDirectories=statisticsFolder.list();
@@ -100,6 +110,48 @@ public class StatisticsImpl implements StatisticsService {
     }
 
     @Override
+    public ArrayList<StatisticsInfo> getAllKeyWordsByES(){
+        ArrayList<StatisticsInfo> statisticsInfos=new ArrayList<>();
+        Map<String,Integer> allKeyWords=new HashMap<>();
+        Map<String,Integer> sortMap=new HashMap<>();
+
+//        Segments segmentsService = new SegmentsImpl();
+        List<Segment> segList = segmentsService.getAllSegments("history.txt");
+
+        for(int i=0;i<segList.size();i++){
+            for(int j=0;j<segList.get(i).getSegments().size();j++) {
+                String seg = segList.get(i).getSegments().get(j);
+                if(allKeyWords.containsKey(seg)){
+                    int val = allKeyWords.get(seg) + 1;
+                    allKeyWords.put(seg, val);
+                }else{
+                    allKeyWords.put(seg, 1);
+                }
+            }
+        }
+
+        sortMap=new TreeMap<String,Integer>(new MapValueComparator(allKeyWords));
+        sortMap.putAll(allKeyWords);
+
+        for (Map.Entry<String,Integer> entry:sortMap.entrySet()){
+            boolean inNone=false;
+            for(int i=0;i<config.noStatisticsWords.length;i++){
+                if (config.noStatisticsWords[i].equals(entry.getKey())){
+                    inNone=true;
+                    break;
+                }
+            }
+            if (!inNone){
+                StatisticsInfo statisticsInfo=new StatisticsInfo(entry.getKey(),entry.getValue());
+                statisticsInfos.add(statisticsInfo);
+            }
+        }
+
+        return statisticsInfos;
+    }
+
+
+    @Override
     public ArrayList<StatisticsInfo> getOneAttribute(String dictName, String attributeName, String keyWord) {
         ArrayList<StatisticsInfo> statisticsInfos=new ArrayList<>();
         Map<String,Integer> allKeyWords=new HashMap<>();
@@ -160,6 +212,81 @@ public class StatisticsImpl implements StatisticsService {
         return statisticsInfos;
     }
 
+    @Override
+    public ArrayList<StatisticsInfo> getAuthorAttributeByES(String keyWord){
+        ArrayList<StatisticsInfo> statisticsInfos=new ArrayList<>();
+        Map<String,Integer> allKeyWords=new HashMap<>();
+        Map<String,Integer> sortMap=new HashMap<>();
+
+        List<HistoryAuthorEntity> list = historyAuthorsService.getAuthorByHistoryPaper(keyWord);
+
+        for(HistoryAuthorEntity author:list){
+            String authorName = author.getAuthorName();
+            if(allKeyWords.containsKey(authorName)){
+                int val = allKeyWords.get(authorName) + 1;
+                allKeyWords.put(authorName, val);
+            }else{
+                allKeyWords.put(authorName, 1);
+            }
+        }
+
+        sortMap=new TreeMap<String,Integer>(new MapValueComparator(allKeyWords));
+        sortMap.putAll(allKeyWords);
+
+        for (Map.Entry<String,Integer> entry:sortMap.entrySet()){
+            boolean inNone=false;
+            for(int i=0;i<config.noStatisticsWords.length;i++){
+                if (config.noStatisticsWords[i].equals(entry.getKey())){
+                    inNone=true;
+                    break;
+                }
+            }
+            if (!inNone){
+                StatisticsInfo statisticsInfo=new StatisticsInfo(entry.getKey(),entry.getValue());
+                statisticsInfos.add(statisticsInfo);
+            }
+        }
+
+        return statisticsInfos;
+    }
+
+    @Override
+    public ArrayList<StatisticsInfo> getInstitutionAttributeByES(String keyWord){
+        ArrayList<StatisticsInfo> statisticsInfos=new ArrayList<>();
+        Map<String,Integer> allKeyWords=new HashMap<>();
+        Map<String,Integer> sortMap=new HashMap<>();
+
+        List<HistoryAuthorEntity> list = historyAuthorsService.getAuthorByHistoryPaper(keyWord);
+
+        for(HistoryAuthorEntity author:list){
+            String insName = author.getAuthorInstitution();
+            if(allKeyWords.containsKey(insName)){
+                int val = allKeyWords.get(insName) + 1;
+                allKeyWords.put(insName, val);
+            }else{
+                allKeyWords.put(insName, 1);
+            }
+        }
+
+        sortMap=new TreeMap<String,Integer>(new MapValueComparator(allKeyWords));
+        sortMap.putAll(allKeyWords);
+
+        for (Map.Entry<String,Integer> entry:sortMap.entrySet()){
+            boolean inNone=false;
+            for(int i=0;i<config.noStatisticsWords.length;i++){
+                if (config.noStatisticsWords[i].equals(entry.getKey())){
+                    inNone=true;
+                    break;
+                }
+            }
+            if (!inNone){
+                StatisticsInfo statisticsInfo=new StatisticsInfo(entry.getKey(),entry.getValue());
+                statisticsInfos.add(statisticsInfo);
+            }
+        }
+
+        return statisticsInfos;
+    }
 
 
     @Override

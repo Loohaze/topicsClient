@@ -1,9 +1,11 @@
 package com.nju.topics.entitysevice.impl;
 
+import com.nju.topics.config.Config;
 import com.nju.topics.domain.StatisticsInfo;
 import com.nju.topics.entity.HistoryAuthorEntity;
 import com.nju.topics.entity.HistoryPapersEntity;
 import com.nju.topics.entitysevice.HistoryAuthorsService;
+import com.nju.topics.entitysevice.HistoryPapersSerivce;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
@@ -26,6 +28,12 @@ public class HistoryAuthorsImpl implements HistoryAuthorsService {
 
     @Autowired
     private RestHighLevelClient restHighLevelClient;
+
+    @Autowired
+    private Config config;
+
+    @Autowired
+    private HistoryPapersSerivce historyPapersSerivce;
 
     @Override
     public ArrayList<StatisticsInfo> getRelativeAuthorByAuthor(String authorName) {
@@ -143,6 +151,70 @@ public class HistoryAuthorsImpl implements HistoryAuthorsService {
         return relativeAuthors;
     }
 
+    @Override
+    public List<HistoryAuthorEntity> getAuthorByHistoryPaper(String keyWord) {
+        List<HistoryAuthorEntity> historyAuthorEntities=new ArrayList<>();
+
+        ArrayList<String> snos=new ArrayList<>();
+
+        List<HistoryPapersEntity> paperList = historyPapersSerivce.getHistoryPaperByName(keyWord);
+
+        for (HistoryPapersEntity paper: paperList){
+            snos.add(paper.getSNO());
+        }
+
+        historyAuthorEntities=getHistoryAuthorsBySNOs(snos);
+        return historyAuthorEntities;
+    }
+
+    public List<HistoryAuthorEntity> getHistoryAuthorsBySNOs(ArrayList<String> snos){
+        List<HistoryAuthorEntity> historyAuthorEntities=new ArrayList<>();
+
+        BoolQueryBuilder boolBuilder = QueryBuilders.boolQuery();
+
+        boolBuilder.must(QueryBuilders.termsQuery("SNO.keyword", snos));
+
+        SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
+        sourceBuilder.query(boolBuilder);
+
+        sourceBuilder.from(0);
+        sourceBuilder.size(500); // 获取记录数，默认10
+
+        SearchRequest searchRequest = new SearchRequest("historyauthors");
+//        searchRequest.types(type);
+        searchRequest.source(sourceBuilder);
+        SearchResponse response=new SearchResponse();
+        try {
+            response = restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+        System.out.println("search: " + (response).toString());
+
+        SearchHits hits = response.getHits();
+        SearchHit[] searchHits = hits.getHits();
+        for (SearchHit s:searchHits){
+            HistoryAuthorEntity authorEntity=new HistoryAuthorEntity();
+            authorEntity.setAuthorName(String.valueOf(s.getSourceAsMap().get("ZZMC")));
+            authorEntity.setAuthorInstitution(String.valueOf(s.getSourceAsMap().get("JGMC")));
+            authorEntity.setAuthorDepartment(String.valueOf(s.getSourceAsMap().get("TXDZ")));
+            boolean hasSameAuthor=false;
+            if (historyAuthorEntities!=null && historyAuthorEntities.size()>0){
+                for (HistoryAuthorEntity ha:historyAuthorEntities){
+                    if (ha.getAuthorName().equals(authorEntity.getAuthorName()) &&
+                            ha.getAuthorDepartment().equals(authorEntity.getAuthorDepartment()) &&
+                            ha.getAuthorInstitution().equals(authorEntity.getAuthorInstitution())){
+                        hasSameAuthor=true;
+                        break;
+                    }
+                }
+            }
+            if (!hasSameAuthor){
+                historyAuthorEntities.add(authorEntity);
+            }
+        }
+        return historyAuthorEntities;
+    }
     @Override
     public List<HistoryAuthorEntity> getAuthorInfoByName(String authorName) {
         List<HistoryAuthorEntity> authorEntities=new ArrayList<>();
