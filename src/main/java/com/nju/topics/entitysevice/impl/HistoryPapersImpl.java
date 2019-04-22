@@ -117,7 +117,7 @@ public class HistoryPapersImpl implements HistoryPapersSerivce {
         SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
         sourceBuilder.query(boolBuilder);
         sourceBuilder.from(0);
-        sourceBuilder.size(500); // 获取记录数，默认10
+        sourceBuilder.size(20000); // 获取记录数，默认10
 //        sourceBuilder.fetchSource(new String[] { "id", "name" }, new String[] {}); // 第一个是获取字段，第二个是过滤的字段，默认获取全部
         SearchRequest searchRequest = new SearchRequest(config.getHistoryPaperIndex());
 //        searchRequest.types(type);
@@ -128,7 +128,7 @@ public class HistoryPapersImpl implements HistoryPapersSerivce {
         }catch (IOException e){
             e.printStackTrace();
         }
-        System.out.println("search: " + (response).toString());
+//        System.out.println("search: " + (response).toString());
         SearchHits hits = response.getHits();
         SearchHit[] searchHits = hits.getHits();
         for (SearchHit s:searchHits){
@@ -157,7 +157,7 @@ public class HistoryPapersImpl implements HistoryPapersSerivce {
         sourceBuilder.query(boolBuilder);
 
         sourceBuilder.from(0);
-        sourceBuilder.size(100); // 获取记录数，默认10
+        sourceBuilder.size(10000); // 获取记录数，默认10
 
 //        sourceBuilder.fetchSource(new String[] { "id", "name" }, new String[] {}); // 第一个是获取字段，第二个是过滤的字段，默认获取全部
         SearchRequest searchRequest = new SearchRequest(config.getHistoryPaperIndex());
@@ -200,7 +200,7 @@ public class HistoryPapersImpl implements HistoryPapersSerivce {
 
 
         sourceBuilder.from(0);
-        sourceBuilder.size(200); // 获取记录数，默认10
+        sourceBuilder.size(20000); // 获取记录数，默认10
 
 //        sourceBuilder.fetchSource(new String[] { "id", "name" }, new String[] {}); // 第一个是获取字段，第二个是过滤的字段，默认获取全部
         SearchRequest searchRequest = new SearchRequest("historyauthors");
@@ -235,7 +235,7 @@ public class HistoryPapersImpl implements HistoryPapersSerivce {
         sourceBuilder.query(boolBuilder);
 
         sourceBuilder.from(0);
-        sourceBuilder.size(200); // 获取记录数，默认10
+        sourceBuilder.size(20000); // 获取记录数，默认10
 
 //        sourceBuilder.fetchSource(new String[] { "id", "name" }, new String[] {}); // 第一个是获取字段，第二个是过滤的字段，默认获取全部
         SearchRequest searchRequest = new SearchRequest(config.getHistoryPaperIndex());
@@ -381,7 +381,8 @@ public class HistoryPapersImpl implements HistoryPapersSerivce {
                     }
                     hasNew=true;
                     newTagBuilder.endObject();
-                    UpdateRequest updateRequest=new UpdateRequest(config.getHistoryPaperIndex(),config.getHistoryPaperType(),s.getId())
+                    UpdateRequest updateRequest=new UpdateRequest(config.getHistoryPaperIndex(),
+                            config.getHistoryPaperType(),s.getId())
                             .doc(newTagBuilder);
                     updateBulkRequest.add(updateRequest);
                 }catch (Exception e){

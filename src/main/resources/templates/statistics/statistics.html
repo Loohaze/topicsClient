@@ -73,7 +73,7 @@
         </div>
 
         <datalist id="keyList" class="selectList">
-            <option v-for="searchKey in searchResult" v-bind:value="searchKey"/>
+            <option v-for="searchKey in searchResult" v-bind:value="searchKey.key">({{searchKey.num}})</option>
 <!--            {{searchKey}}</div>-->
         </datalist>
 

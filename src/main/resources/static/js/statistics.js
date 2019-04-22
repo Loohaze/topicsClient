@@ -40,6 +40,7 @@ function statistics() {
                     var venueNum=[];
                     var institutionNum=[];
 
+                    this.searchResult=resAuthorDict;
                     for(var i=0;i<resAuthorDict.length;i++){
                         var item=resAuthorDict[i];
 
@@ -47,7 +48,7 @@ function statistics() {
                         authorNum.push(item.num);
                     }
                     this.allKeyWords=authorKey;
-                    this.searchResult=authorKey;
+                    // this.searchResult=authorKey;
                     this.nowKeyWord=authorKey[0];
                     // statisticsVue.generalShowChart.setOption({
                     //     xAxis:{
@@ -523,6 +524,7 @@ function statistics() {
                         var venueNum=[];
                         var institutionNum=[];
 
+                        statisticsVue.searchResult=resAuthorDict;
                         for(var i=0;i<resAuthorDict.length;i++){
                             var item=resAuthorDict[i];
 
@@ -531,7 +533,7 @@ function statistics() {
                         }
                         console.log(authorKey);
                         statisticsVue.allKeyWords=authorKey;
-                        statisticsVue.searchResult=authorKey;
+                        // statisticsVue.searchResult=authorKey;
                         statisticsVue.nowKeyWord=authorKey[0];
                         // statisticsVue.generalShowChart.setOption({
                         //     xAxis:{

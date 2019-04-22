@@ -46,7 +46,7 @@ public class HistoryAuthorsImpl implements HistoryAuthorsService {
         sourceBuilder.query(boolBuilder);
 
         sourceBuilder.from(0);
-        sourceBuilder.size(100); // 获取记录数，默认10
+        sourceBuilder.size(10000); // 获取记录数，默认10
 
 //        sourceBuilder.fetchSource(new String[] { "id", "name" }, new String[] {}); // 第一个是获取字段，第二个是过滤的字段，默认获取全部
         SearchRequest searchRequest = new SearchRequest("historyauthors");
@@ -178,7 +178,7 @@ public class HistoryAuthorsImpl implements HistoryAuthorsService {
         sourceBuilder.query(boolBuilder);
 
         sourceBuilder.from(0);
-        sourceBuilder.size(500); // 获取记录数，默认10
+        sourceBuilder.size(20000); // 获取记录数，默认10
 
         SearchRequest searchRequest = new SearchRequest("historyauthors");
 //        searchRequest.types(type);
@@ -189,7 +189,7 @@ public class HistoryAuthorsImpl implements HistoryAuthorsService {
         }catch (IOException e){
             e.printStackTrace();
         }
-        System.out.println("search: " + (response).toString());
+//        System.out.println("search: " + (response).toString());
 
         SearchHits hits = response.getHits();
         SearchHit[] searchHits = hits.getHits();
@@ -227,7 +227,7 @@ public class HistoryAuthorsImpl implements HistoryAuthorsService {
         sourceBuilder.query(boolBuilder);
 
         sourceBuilder.from(0);
-        sourceBuilder.size(20); // 获取记录数，默认10
+        sourceBuilder.size(20000); // 获取记录数，默认10
 
 //        sourceBuilder.fetchSource(new String[] { "id", "name" }, new String[] {}); // 第一个是获取字段，第二个是过滤的字段，默认获取全部
         SearchRequest searchRequest = new SearchRequest("historyauthors");
