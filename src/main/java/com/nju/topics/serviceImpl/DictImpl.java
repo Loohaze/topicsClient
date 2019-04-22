@@ -40,7 +40,13 @@ public class DictImpl implements Dict {
 
                 while ((line = bufferedReader.readLine()) != null) {
                     String[] dictData = line.split(" ");
-                    dictMap.put(dictData[0], Integer.parseInt(dictData[1]));
+                    if (dictData.length>1 && !dictData[1].equals(" ") && !dictData[1].equals("") && dictData[1].matches("\\d+")){
+                        dictMap.put(dictData[0], Integer.parseInt(dictData[1]));
+                    }else if (dictData.length>1){
+                        dictMap.put(dictData[0], 1);
+
+                    }
+
                 }
 
                 if (!dictMap.containsKey(word)) {
@@ -49,7 +55,12 @@ public class DictImpl implements Dict {
                     bufferedWriter.write(word + " " + Config.DEFAULT_NUM+System.getProperty("line.separator"));
                     bufferedWriter.close();
                 }
+
+                bufferedReader.close();
+                read.close();
             }
+
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -73,7 +84,12 @@ public class DictImpl implements Dict {
 
                 while ((line = bufferedReader.readLine()) != null) {
                     String[] dictData = line.split(" ");
-                    dictMap.put(dictData[0], Integer.parseInt(dictData[1]));
+                    if (dictData.length>1 && !dictData[1].equals(" ") && !dictData[1].equals("") && dictData[1].matches("\\d+")){
+                        dictMap.put(dictData[0], Integer.parseInt(dictData[1]));
+                    }else if (dictData.length>1){
+                        dictMap.put(dictData[0], 1);
+
+                    }
                 }
 
                 OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(dict,true));
@@ -83,7 +99,8 @@ public class DictImpl implements Dict {
                         bufferedWriter.write(word + " " + Config.DEFAULT_NUM+System.getProperty("line.separator"));
                     }
                 }
-                bufferedWriter.close();
+                bufferedReader.close();
+                read.close();
 
             }
         } catch (IOException e) {
@@ -113,6 +130,9 @@ public class DictImpl implements Dict {
                     String[] dictData = line.split(" ");
                     result.add(dictData[0]);
                 }
+
+                bufferedReader.close();
+                read.close();
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -138,7 +158,13 @@ public class DictImpl implements Dict {
 
                 while ((line = bufferedReader.readLine()) != null) {
                     String[] dictData = line.split(" ");
-                    dictMap.put(dictData[0], Integer.parseInt(dictData[1]));
+                    if (dictData.length>1 && !dictData[1].equals(" ") && !dictData[1].equals("") && dictData[1].matches("\\d+")){
+                        dictMap.put(dictData[0], Integer.parseInt(dictData[1]));
+                    }else if (dictData.length>1){
+                        dictMap.put(dictData[0], 1);
+
+                    }
+
                 }
 
                 dictMap.remove(word);
@@ -148,7 +174,8 @@ public class DictImpl implements Dict {
                 for (Map.Entry<String,Integer> entry : dictMap.entrySet()) {
                     bufferedWriter.write(entry.getKey()+ " " + entry.getValue() + System.getProperty("line.separator"));
                 }
-                bufferedWriter.close();
+                bufferedReader.close();
+                read.close();
             }
         } catch (IOException e) {
             e.printStackTrace();

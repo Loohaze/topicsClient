@@ -19,8 +19,27 @@ function segmentTrain() {
             input:"input",
             addInput:"addInput",
             showSegPartEC:"",
-            showRealSeg:false
+            showRealSeg:true,
+            // inputPageNum:1,
+            nowPage:1,
+            totalPage:1,
+            enableShiftPage:false,
+            showPageDom:true,
+            lastEnterDate:""
+            // showPageList:false
         },
+        // watch:{
+        //     inputPageNum :function(val,oldVar){
+        //         if (val>segVue.totalPage || val==""){
+        //             segVue.enableShiftPage=false;
+        //             toastr.warning("不存在该页");
+        //         }else{
+        //             segVue.nowPage=val;
+        //             segVue.enableShiftPage=true;
+        //             // segVue.getSegmentsByPage(segVue.nowPage);
+        //         }
+        //     }
+        // },
         methods:{
             segSelect:function () {
                 console.log("切换了分词文件");
@@ -31,7 +50,7 @@ function segmentTrain() {
                 $("#reRunButton").attr("disabled",true);
                 this.nowSegmentFile=$("#segFileSelect").val();
                 console.log("切换文件，新文件请求URL：/seg/getSegments/"+this.nowSegmentFile);
-                this.getAllSegmentsData();
+                this.getAllSegments();
                 // this.$http.get("/dict/getDict").then(function (response) {
                 this.$http.get("/dict/getDict/"+this.nowSegmentFile).then(function (response) {
                     if (response.data.length>0){
@@ -71,6 +90,60 @@ function segmentTrain() {
                       toastr.error(response.bodyText);
                   }
               })
+            },
+            prePage:function(){
+              if (this.nowPage==1){
+                  toastr.warning("已经是第一页了！");
+              }else{
+                  this.nowPage=this.nowPage-1;
+                  $("#pageInput").val(this.nowPage);
+                  this.getSegmentsByPage(this.nowPage);
+              }
+            },
+            postPage:function(){
+                if (this.nowPage==this.totalPage){
+                    toastr.warning("已经是最后一页了！")
+                } else{
+                    this.nowPage=this.nowPage+1;
+                    $("#pageInput").val(this.nowPage);
+                    this.getSegmentsByPage(this.nowPage);
+                }
+            },
+            choosePage:function(){
+                // this.showPageList=true;
+                $("#pageInput").keyup(function (e) {
+                    if (e.keyCode==13){
+                        if( (new Date()).getTime() - (segVue.lastEnterDate).getTime() < 500 ){
+                            console.log("长按，0.5秒后才可以移动一次");
+                            return;
+                        }
+                        segVue.lastEnterDate=new Date();
+                        $("#pageList").hide();
+                        var inputPageContent=$("#pageInput").val();
+                        if (inputPageContent.length<1){
+                            toastr.error("请求的页数不合理:"+inputPageContent);
+                        }else if (inputPageContent=="" ) {
+                            toastr.error("请求的页数不得为空:"+inputPageContent);
+                        }else if(parseInt(inputPageContent)>segVue.totalPage){
+                            toastr.error("请求的页数不存在:"+inputPageContent);
+                        }else if (parseInt(inputPageContent)<0) {
+                            toastr.error("请求的页数不得为负数:"+inputPageContent);
+                        }
+                        else{
+                            if (parseInt(inputPageContent)==segVue.nowPage){
+                                toastr.success("切换到页"+inputPageContent+"成功!");
+                            } else{
+                                // segVue.showPageList=false;
+                                this.nowPage=parseInt(inputPageContent);
+                                $("#pageInput").val(this.nowPage);
+                                segVue.getSegmentsByPage(inputPageContent);
+                            }
+
+                        }
+                    }
+                    return;
+                });
+
             },
             chooseAddSeg:function (segment) {
                 this.oneSeg=segment;
@@ -252,9 +325,82 @@ function segmentTrain() {
                     }
 
                 });
+            },
+            getSegmentsByPage:function (pageNum) {
+                this.nowPage=parseInt(pageNum);
+                $("#pageInput").val(this.nowPage);
+                this.showRealSeg=false;
+                // toastr.success("切换到页："+pageNum);
+                this.$http.get("/seg/getPageSegments/"+segVue.nowSegmentFile+"/"+pageNum).then(function (allResponse) {
+                    console.log(allResponse);
+                    this.segments=[];
+                    var allResponseSegList=allResponse.data;
+                    if (allResponseSegList.length>0 && allResponseSegList.length<101){
+                        this.segments=allResponseSegList;
+                        toastr.success("切换到第"+pageNum+"页成功!");
+                        this.showRealSeg=true;
+                    } else if (allResponseSegList.length>100) {
+                        for(var i=0;i<100;i++){
+                            (this.segments).push(allResponseSegList[i]);
+                        }
+                        this.showRealSeg=true;
+                        setTimeout(function () {
+                            for(var i=100;i<allResponseSegList.length;i++){
+                                (segVue.segments).push(allResponseSegList[i]);
+                            }
+                            toastr.success("切换到第"+pageNum+"页成功!");
+                        },1000);
+                    }else{
+                        toastr.warning("sorry,该页内容消失!");
+                        // segVue.segments=[{title:"分词文件为空",segments:["请通知管理人员上传分词文件"]}];
+                        this.showRealSeg=true;
+                    }
+                });
+            },
+            getAllSegments:function () {
+                this.$http.get("/seg/getSegments/"+segVue.nowSegmentFile).then(function (allResponse) {
+                    console.log(allResponse);
+                    this.segments=[];
+                    var allResponseData=allResponse.data;
+                    var pageNum=allResponseData.pageNum;
+                    this.totalPage=pageNum;
+                    this.nowPage=1;
+                    $("#pageInput").val(this.nowPage);
+                    if (pageNum==1){
+                        this.showPageDom=false;
+                    } else {
+                        this.showPageDom=true;
+                    }
+                    var allResponseSegList=allResponseData.pageData;
+                    if (allResponseSegList.length>0 && allResponseSegList.length<101){
+                        this.segments=allResponseSegList;
+                        toastr.success("加载"+segVue.nowSegmentFile+"成功!");
+                        $("#reRunButton").attr("disabled",false);
+                        this.showRealSeg=true;
+                    } else if (allResponseSegList.length>100) {
+                        for(var i=0;i<100;i++){
+                            (this.segments).push(allResponseSegList[i]);
+                        }
+                        this.showRealSeg=true;
+                        setTimeout(function () {
+                            for(var i=100;i<allResponseSegList.length;i++){
+                                (segVue.segments).push(allResponseSegList[i]);
+                            }
+                            toastr.success("加载"+segVue.nowSegmentFile+"成功!");
+                            $("#reRunButton").attr("disabled",false);
+                        },1000);
+                    }else{
+                        segVue.segments=[{title:"分词文件为空",segments:["请通知管理人员上传分词文件"]}];
+                        this.showRealSeg=true;
+                    }
+                });
             }
         },
         mounted:function () {
+            this.lastEnterDate=new Date();
+            this.nowPage=1;
+            this.totalPage=5;
+            $("#pageInput").val(this.nowPage);
             $("#reRunButton").attr("disabled",true);
             this.$http.get("/file/getAllSegmentFiles").then(function (response) {
                     if (response.data!=null && response.data.length>0){
@@ -263,7 +409,7 @@ function segmentTrain() {
 
                         console.log("mounted:/seg/getSegments/"+this.nowSegmentFile)
                         // this.$http.get("/seg/getSegments").then(function (response) {
-                        this.getAllSegmentsData();
+                        this.getAllSegments();
                         // this.$http.get("/dict/getDict").then(function (response) {
                         segVue.$http.get("/dict/getDict/"+segVue.nowSegmentFile).then(function (response) {
                             if (response.data.length>0){

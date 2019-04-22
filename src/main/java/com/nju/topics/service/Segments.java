@@ -1,12 +1,15 @@
 package com.nju.topics.service;
 
+import com.nju.topics.domain.PageDataInfo;
 import com.nju.topics.domain.Segment;
 
 import java.util.List;
 
 public interface Segments {
 
-    public List<Segment> getAllSegments(String segName);
+    public PageDataInfo getAllSegments(String segName);
+
+    public List<Segment> getSegmentsByPage(String segName,int pageNum);
 
     public String reRunPy(String segFileName);
 

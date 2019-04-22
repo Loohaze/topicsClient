@@ -49,17 +49,24 @@ public class StatisticsController {
     @ResponseBody
     public ArrayList<StatisticsInfo> getOneKeyAttribute(@PathVariable("dictName")String dictName, @PathVariable("attributeName")String attributeName,
                                                         @PathVariable("keyword")String keyword){
-        if(dictName.equals("historyES")){
-            if(attributeName.equals("author")){
-                return statisticsService.getAuthorAttributeByES(keyword);
-            }else if(attributeName.equals("institution")){
-                return  statisticsService.getInstitutionAttributeByES(keyword);
-            }else{
-                return null;
-            }
+        if(attributeName.equals("author")){
+            return statisticsService.getAuthorAttributeByES(keyword);
+        }else if(attributeName.equals("institution")){
+            return  statisticsService.getInstitutionAttributeByES(keyword);
         }else{
-            return statisticsService.getOneAttribute(dictName,attributeName,keyword);
+            return null;
         }
+//        if(dictName.equals("historyES")){
+//            if(attributeName.equals("author")){
+//                return statisticsService.getAuthorAttributeByES(keyword);
+//            }else if(attributeName.equals("institution")){
+//                return  statisticsService.getInstitutionAttributeByES(keyword);
+//            }else{
+//                return null;
+//            }
+//        }else{
+//            return statisticsService.getOneAttribute(dictName,attributeName,keyword);
+//        }
 
     }
 

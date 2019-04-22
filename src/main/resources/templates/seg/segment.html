@@ -113,6 +113,26 @@
 
             </div>
         </div>
+        <div class="row" id="pageRow" v-show="showPageDom">
+            <a v-on:click="prePage" type="button" class="pageHref btn-info">
+                <div class="col-xs-5 pageFont">
+                    <i class="fa fa-angle-left fa-lg"></i>
+                    上一页
+                </div>
+            </a>
+            <div class="col-xs-2 pageShowCol">
+                <input id="pageInput" type="text" list="pageList" class="form-control" v-on:focus="choosePage"/>
+                <datalist id="pageList" class="selectList">
+                    <option v-for="eachPage in totalPage" class="pageOption" v-bind:value="eachPage"></option>
+                </datalist>
+            </div>
+            <a v-on:click="postPage" type="button" class="pageHref">
+                <div class="col-xs-5 pageFont">
+                    下一页
+                    <i class="fa fa-angle-right fa-lg"></i>
+                </div>
+            </a>
+        </div>
 
     </div>
     <div class="segRight">

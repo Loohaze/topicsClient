@@ -116,7 +116,7 @@ public class StatisticsImpl implements StatisticsService {
         Map<String,Integer> sortMap=new HashMap<>();
 
 //        Segments segmentsService = new SegmentsImpl();
-        List<Segment> segList = segmentsService.getAllSegments("history.txt");
+        List<Segment> segList = (segmentsService.getAllSegments("history.txt")).getPageData();
 
         for(int i=0;i<segList.size();i++){
             for(int j=0;j<segList.get(i).getSegments().size();j++) {

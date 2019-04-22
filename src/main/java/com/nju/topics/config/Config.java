@@ -60,7 +60,9 @@ public class Config {
     @Value("${pair.file.path}")
     private String pairFilePath;
 
-    private long preGetNum=100;
+    private long preGetNum=0;
+
+    private int perPageNum=500;
 
     public String[] noStatisticsWords={"的","为例","20","志","初探","考","说","读","观","前","题","卷","早期","形成","地区","研讨会","探析","理论","评","再","化","辩","文献","发展","研究","新","史学","历史","中","年","中心","时期","综述","史","笔谈","关系","°","世纪","º","ƒ","年代","古代",
     "∑","µ","±","Œ","÷","与","–","体系", "相关","∂","区域", "∞","π","Ω", "Ã", "™","Ø","≥","∫","ø","¡","œ","2013","˙","À","∆","ÿ"};
@@ -150,5 +152,9 @@ public class Config {
 
     public long getPreGetNum() {
         return preGetNum;
+    }
+
+    public int getPerPageNum() {
+        return perPageNum;
     }
 }

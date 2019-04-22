@@ -37,6 +37,8 @@
 }
 
 #reRunButton{
+    margin-right: -4px;
+    min-width: 80px;
     float: right;
     margin-top: 5px;
     margin-bottom: 5px;
@@ -46,13 +48,13 @@
     overflow-x: hidden;
     overflow-y: auto;
     width: 99%;
-    height: 7000px;
+    height: 5000px;
 }
 #showSegScroll2{
     overflow-x: hidden;
     overflow-y: auto;
     width: 99%;
-    height: 7000px;
+    height: 5000px;
 }
 
 .segTitle{
@@ -232,5 +234,91 @@
     /*overflow-x: hidden;*/
     color: grey;
     margin-top: -5px;
+}
+
+.pageFont{
+    text-align: center;
+    color: white;
+    height: 2.5em;
+    line-height: 2.5em;
+    align-items: center;
+    background-color: #78322a;
+}
+.pageFont:hover{
+    text-align: center;
+    color: white;
+    height: 2.5em;
+    line-height: 2.5em;
+    align-items: center;
+    background-color: #a5574f;
+}
+
+#pageSelectDom{
+    text-align: center;
+    margin-left: 0px;
+    border-radius: 0px;
+    border: solid 1px #78322a;
+    appearance: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    padding-right: 14px;
+    font-size: 1em;
+
+}
+#pageInput{
+    text-align: center;
+    margin-left: 0px;
+    border-radius: 0px;
+    border: solid 1px #78322a;
+    appearance: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    padding-right: 14px;
+    font-size: 1em;
+
+}
+
+#pageSelectDom::-ms-expand {
+    display: none;
+}
+
+#pageInput::-webkit-calendar-picker-indicator {
+    display: none;
+    -webkit-appearance: none;
+}
+
+.pageOption{
+    color: black;
+}
+
+.pageHref{
+
+    color: white;
+    cursor:pointer;
+}
+
+.pageHref:hover{
+    /*background-color: red;*/
+    color: white;
+    cursor:pointer;
+
+}
+
+
+.fa{
+    vertical-align: middle;
+}
+
+#pageRow{
+    margin-bottom: 20px;
+    width: 78%;
+    margin-left: 5%;
+}
+
+.pageShowCol{
+    height: 2.5em;
+    line-height: 2.4em;
+    background-color: #78322a;
+    text-align: center;
 }
 
