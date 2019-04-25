@@ -1,6 +1,7 @@
 package com.nju.topics.serviceImpl;
 
 import com.nju.topics.config.Config;
+import com.nju.topics.dao.HistoryPapersSerivce;
 import com.nju.topics.domain.Segment;
 import com.nju.topics.domain.StatisticsInfo;
 import com.nju.topics.entity.HistoryAuthorEntity;
@@ -12,11 +13,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ResourceUtils;
 
+import java.awt.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.*;
+import java.util.List;
 
 
 @Component
@@ -30,6 +33,9 @@ public class StatisticsImpl implements StatisticsService {
 
     @Autowired
     private HistoryAuthorsService historyAuthorsService;
+
+    @Autowired
+    private HistoryPapersSerivce historyPapersSerivce;
 
     @Override
     public ArrayList<String> getAllStatisticsDictNames() {
@@ -112,21 +118,30 @@ public class StatisticsImpl implements StatisticsService {
     @Override
     public ArrayList<StatisticsInfo> getAllKeyWordsByES(){
         ArrayList<StatisticsInfo> statisticsInfos=new ArrayList<>();
-        Map<String,Integer> allKeyWords=new HashMap<>();
+        Map<String,Integer> allKeyWords=historyPapersSerivce.getAllTagsAndTimes();
+//        for (Map.Entry<String,Integer> allKeyFromByc:allKeyWords.entrySet()){
+//            System.out.println(allKeyFromByc.getKey()+":"+allKeyFromByc.getValue());
+//        }
         Map<String,Integer> sortMap=new HashMap<>();
 
 //        Segments segmentsService = new SegmentsImpl();
-        List<Segment> segList = (segmentsService.getAllSegments("history.txt")).getPageData();
+        List<Segment> segList = (segmentsService.getSegmentsNoneCondition("history.txt"));
 
         for(int i=0;i<segList.size();i++){
+            HashMap<String,Integer> tempSegMap=new HashMap<>();
             for(int j=0;j<segList.get(i).getSegments().size();j++) {
-                String seg = segList.get(i).getSegments().get(j);
-                if(allKeyWords.containsKey(seg)){
-                    int val = allKeyWords.get(seg) + 1;
-                    allKeyWords.put(seg, val);
-                }else{
-                    allKeyWords.put(seg, 1);
+                String seg =((segList.get(i).getSegments()).get(j)).trim();
+                if (!tempSegMap.containsKey(seg)){
+                    tempSegMap.put(seg,new Integer(1));
                 }
+            }
+            for (Map.Entry<String,Integer> tempSegEntry:tempSegMap.entrySet()){
+                if (!allKeyWords.containsKey(tempSegEntry.getKey())){
+                    allKeyWords.put(tempSegEntry.getKey(),tempSegEntry.getValue().intValue());
+                }else{
+                    allKeyWords.put((tempSegEntry.getKey()).toString(),allKeyWords.get(tempSegEntry.getKey()).intValue()+tempSegEntry.getValue().intValue() );
+                }
+//                System.err.println(tempSegEntry.getKey()+":"+allKeyWords.get(tempSegEntry.getKey())+"--"+allKeyWords.containsKey(tempSegEntry.getKey()));
             }
         }
 
@@ -136,7 +151,7 @@ public class StatisticsImpl implements StatisticsService {
         for (Map.Entry<String,Integer> entry:sortMap.entrySet()){
             boolean inNone=false;
             for(int i=0;i<config.noStatisticsWords.length;i++){
-                if (config.noStatisticsWords[i].equals(entry.getKey())){
+                if (config.noStatisticsWords[i].equals(entry.getKey()) || entry.getKey().length()==1){
                     inNone=true;
                     break;
                 }
@@ -229,22 +244,14 @@ public class StatisticsImpl implements StatisticsService {
                 allKeyWords.put(authorName, 1);
             }
         }
+        System.out.println("共找到多少作者："+allKeyWords.size());
 
         sortMap=new TreeMap<String,Integer>(new MapValueComparator(allKeyWords));
         sortMap.putAll(allKeyWords);
 
         for (Map.Entry<String,Integer> entry:sortMap.entrySet()){
-            boolean inNone=false;
-            for(int i=0;i<config.noStatisticsWords.length;i++){
-                if (config.noStatisticsWords[i].equals(entry.getKey())){
-                    inNone=true;
-                    break;
-                }
-            }
-            if (!inNone){
-                StatisticsInfo statisticsInfo=new StatisticsInfo(entry.getKey(),entry.getValue());
-                statisticsInfos.add(statisticsInfo);
-            }
+            StatisticsInfo statisticsInfo=new StatisticsInfo(entry.getKey(),entry.getValue());
+            statisticsInfos.add(statisticsInfo);
         }
 
         return statisticsInfos;
@@ -272,17 +279,10 @@ public class StatisticsImpl implements StatisticsService {
         sortMap.putAll(allKeyWords);
 
         for (Map.Entry<String,Integer> entry:sortMap.entrySet()){
-            boolean inNone=false;
-            for(int i=0;i<config.noStatisticsWords.length;i++){
-                if (config.noStatisticsWords[i].equals(entry.getKey())){
-                    inNone=true;
-                    break;
-                }
-            }
-            if (!inNone){
-                StatisticsInfo statisticsInfo=new StatisticsInfo(entry.getKey(),entry.getValue());
-                statisticsInfos.add(statisticsInfo);
-            }
+
+            StatisticsInfo statisticsInfo=new StatisticsInfo(entry.getKey(),entry.getValue());
+            statisticsInfos.add(statisticsInfo);
+
         }
 
         return statisticsInfos;

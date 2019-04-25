@@ -6,6 +6,7 @@ import com.nju.topics.entity.HistoryPapersEntity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public interface HistoryPapersSerivce {
 
@@ -30,4 +31,6 @@ public interface HistoryPapersSerivce {
     public void bulkUpdateTagsByTitle(String originName,ArrayList<String> tags);
 
     public ArrayList<String> getSomeTags();
+
+    public Map<String,Integer> getAllTagsAndTimes();
 }

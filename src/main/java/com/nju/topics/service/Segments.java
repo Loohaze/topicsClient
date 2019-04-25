@@ -10,6 +10,7 @@ public interface Segments {
     public PageDataInfo getAllSegments(String segName);
 
     public List<Segment> getSegmentsByPage(String segName,int pageNum);
+    public List<Segment> getSegmentsNoneCondition(String segName);
 
     public String reRunPy(String segFileName);
 

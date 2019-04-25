@@ -111,7 +111,9 @@ public class HistoryPapersImpl implements HistoryPapersSerivce {
         List<HistoryPapersEntity> historyPapersEntities=new ArrayList<>();
 
         BoolQueryBuilder boolBuilder = QueryBuilders.boolQuery();
-        boolBuilder.must(QueryBuilders.wildcardQuery("LYPM.keyword", "*"+paperName+"*"));
+        boolBuilder.should(QueryBuilders.wildcardQuery("LYPM.keyword", "*"+paperName+"*"));
+        boolBuilder.should(QueryBuilders.wildcardQuery("BYC.keyword", "*"+paperName+"*"));
+        boolBuilder.should(QueryBuilders.wildcardQuery("Tags", "*"+paperName+"*"));
         SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
         sourceBuilder.query(boolBuilder);
         sourceBuilder.from(0);
@@ -557,6 +559,19 @@ public class HistoryPapersImpl implements HistoryPapersSerivce {
     @Override
     public ArrayList<String> getSomeTags() {
 
+
+        ArrayList<String> tags=new ArrayList<>();
+        Map<String,Integer> countMap=getAllTagsAndTimes();
+        Map<String,Integer> sortMap=new TreeMap<String,Integer>(new MapValueComparator(countMap));
+        sortMap.putAll(countMap);
+        for (Map.Entry<String,Integer> sortEntry:sortMap.entrySet()){
+            tags.add(sortEntry.getKey());
+        }
+        return tags;
+    }
+
+    @Override
+    public Map<String, Integer> getAllTagsAndTimes() {
         BoolQueryBuilder boolBuilder = QueryBuilders.boolQuery();
         boolBuilder.must(QueryBuilders.matchAllQuery());
         SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
@@ -580,16 +595,22 @@ public class HistoryPapersImpl implements HistoryPapersSerivce {
         for (SearchHit s:searchHits){
             String BYC=String.valueOf(s.getSourceAsMap().get("BYC"));
             String Tags=String.valueOf(s.getSourceAsMap().get("Tags"));
-            String[] BYCSplit=BYC.split("/");
+
             HashMap<String,Integer> tempHashMap=new HashMap<>();
-            for(String eachByc:BYCSplit){
-                if (eachByc!=null && eachByc.length()>0 && !eachByc.equals("null")){
-                    tempHashMap.put(eachByc,1);
+            if (BYC!=null && BYC.length()>0){
+                String[] BYCSplit=BYC.split("/");
+                for(String eachByc:BYCSplit){
+                    eachByc=eachByc.trim();
+                    if (eachByc!=null && eachByc.length()>0 && !eachByc.equals("null")){
+                        tempHashMap.put(eachByc,1);
+                    }
                 }
             }
+
             if (Tags!=null && Tags.length()>0){
                 String[] TagsSplit=Tags.split("/");
                 for(String eachTag:TagsSplit){
+                    eachTag=eachTag.trim();
                     if (eachTag!=null && eachTag.length()>0 && !eachTag.equals("null")){
                         tempHashMap.put(eachTag,1);
                     }
@@ -607,12 +628,7 @@ public class HistoryPapersImpl implements HistoryPapersSerivce {
 
         }
 
-        ArrayList<String> tags=new ArrayList<>();
-        Map<String,Integer> sortMap=new TreeMap<String,Integer>(new MapValueComparator(countMap));
-        sortMap.putAll(countMap);
-        for (Map.Entry<String,Integer> sortEntry:sortMap.entrySet()){
-            tags.add(sortEntry.getKey());
-        }
-        return tags;
+
+        return countMap;
     }
 }

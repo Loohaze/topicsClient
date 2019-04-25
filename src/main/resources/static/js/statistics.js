@@ -19,7 +19,8 @@ function statistics() {
             nowKeyWord:"",
             nowAuthor:"",
             showTree:false,
-            relationList:[]
+            relationList:[],
+            authorTotalNum:0
 
         },
         methods:{
@@ -32,183 +33,7 @@ function statistics() {
                 this.venueKeyShowChart.showLoading();
                 this.institutionKeyShowChart.showLoading();
 
-                this.$http.get("/statistics/getAllKeyWords/"+this.nowDict+"/author").then(function (response) {
-
-                    var resAuthorDict=response.data;
-                    var authorKey=[];
-                    var authorNum=[];
-                    var venueNum=[];
-                    var institutionNum=[];
-
-                    this.searchResult=resAuthorDict;
-                    for(var i=0;i<resAuthorDict.length;i++){
-                        var item=resAuthorDict[i];
-
-                        authorKey.push(item.key);
-                        authorNum.push(item.num);
-                    }
-                    this.allKeyWords=authorKey;
-                    // this.searchResult=authorKey;
-                    this.nowKeyWord=authorKey[0];
-                    // statisticsVue.generalShowChart.setOption({
-                    //     xAxis:{
-                    //         data:authorKey
-                    //     },
-                    //     series:[{
-                    //         name:'author',
-                    //         data:authorNum
-                    //     }]
-                    // });
-
-                    statisticsVue.$http.get("/statistics/getAllKeyWords/"+this.nowDict+"/venue").then(function (venueResponse) {
-                        console.log("获取到了venue数据");
-                        var venueList=venueResponse.data;
-
-                        for(var i=0;i<authorKey.length;i++){
-                            for(var j=0;j<venueList.length;j++){
-                                if (venueList[j].key==authorKey[i]){
-                                    venueNum.push(venueList[j].num);
-                                    break;
-                                }
-                            }
-                        }
-
-                        statisticsVue.$http.get("/statistics/getAllKeyWords/"+this.nowDict+"/institution").then(function (institutionResponse) {
-                            console.log("获取到了institution数据");
-                            var institutionList=institutionResponse.data;
-                            for(var i=0;i<authorKey.length;i++){
-                                for(var j=0;j<institutionList.length;j++){
-                                    if (institutionList[j].key==authorKey[i]){
-                                        institutionNum.push(institutionList[j].num);
-                                        break;
-                                    }
-                                }
-                            }
-
-                            statisticsVue.generalShowChart.hideLoading();
-                            console.log("开始重绘总览图");
-
-                            //避免卡顿，只绘制前70个关键词
-                            var authorArry = [];
-                            for(var i=0;i<70;i++){
-                                var item={
-                                    name: authorKey[i],
-                                    value: authorNum[i],
-                                }
-                                authorArry.push(item);
-                            }
-
-                            statisticsVue.generalShowChart.setOption({
-
-                                series:[
-                                    {name:'keyword',
-                                        type:'graph',
-                                        layout: 'force',
-                                        data:authorArry,
-                                        roam:true,
-                                        symbolSize: function (data) {
-                                            // console.log(data);
-                                            return Math.round(15 + data * 80 / authorNum[0]);
-                                        },
-                                        label: {
-                                            normal: {
-                                                show: true
-                                            },
-                                            emphasis: {
-                                                show: true,
-                                                formatter: function (param) {
-                                                    return param.name;
-                                                },
-                                                color: 'black'
-                                            }
-                                        },
-                                        force:{
-                                            repulsion: 65
-                                        }
-                                    },
-                                ]
-                            });
-
-                            //鼠标点击事件
-                            statisticsVue.generalShowChart.on('click', function (params) {
-                                // console.log(params.name);
-                            });
-
-
-                            statisticsVue.$http.get("/statistics/getOneKeyAttribute/"+statisticsVue.nowDict+"/author"+"/"+statisticsVue.nowKeyWord).then(function (authorResponse) {
-                                var authorKeyList=authorResponse.data;
-                                var authorNameKey=[];
-                                var authorNameNum=[];
-                                for(var i=0;i<authorKeyList.length;i++){
-                                    authorNameKey.push(authorKeyList[i].key);
-                                    authorNameNum.push(authorKeyList[i].num);
-                                }
-                                statisticsVue.authorKeyShowChart.hideLoading();
-                                console.log("开始重绘authorKey图");
-                                statisticsVue.authorKeyShowChart.setOption({
-                                    title: {
-                                        text: '作者词频分布:'+this.nowKeyWord
-                                    },
-                                    xAxis:{
-                                        data:authorNameKey
-                                    },
-                                    series:[
-                                        {name:'author',type:'line',smooth:true,data:authorNameNum},
-
-                                    ]
-                                });
-                            })
-                            statisticsVue.$http.get("/statistics/getOneKeyAttribute/"+statisticsVue.nowDict+"/venue"+"/"+statisticsVue.nowKeyWord).then(function (venueResponse) {
-                                var venueKeyList=venueResponse.data;
-                                var venueNameKey=[];
-                                var venueNameNum=[];
-                                for(var i=0;i<venueKeyList.length;i++){
-                                    venueNameKey.push(venueKeyList[i].key);
-                                    venueNameNum.push(venueKeyList[i].num);
-                                }
-                                statisticsVue.venueKeyShowChart.hideLoading();
-                                console.log("开始重绘venueKey图");
-                                statisticsVue.venueKeyShowChart.setOption({
-                                    title: {
-                                        text: '期刊词频分布:'+this.nowKeyWord
-                                    },
-                                    xAxis:{
-                                        data:venueNameKey
-                                    },
-                                    series:[
-                                        {name:'venue',type:'line',smooth:true,data:venueNameNum},
-                                    ]
-                                });
-                            })
-                            statisticsVue.$http.get("/statistics/getOneKeyAttribute/"+statisticsVue.nowDict+"/institution"+"/"+statisticsVue.nowKeyWord).then(function (institutionResponse) {
-                                var institutionKeyList=institutionResponse.data;
-                                var institutionNameKey=[];
-                                var institutionNameNum=[];
-                                for(var i=0;i<institutionKeyList.length;i++){
-                                    institutionNameKey.push(institutionKeyList[i].key);
-                                    institutionNameNum.push(institutionKeyList[i].num);
-                                }
-                                statisticsVue.institutionKeyShowChart.hideLoading();
-                                console.log("开始重绘institutionKey图");
-                                statisticsVue.institutionKeyShowChart.setOption({
-                                    title: {
-                                        text: '机构词频分布:'+this.nowKeyWord
-                                    },
-                                    xAxis:{
-                                        data:institutionNameKey
-                                    },
-                                    series:[
-                                        {name:'institution',type:'line',smooth:true,data:institutionNameNum}
-                                    ]
-                                });
-                            })
-
-                        });
-
-                    });
-
-                    toastr.success("切换成功");
-                })
+                this.shiftDictFile();
 
 
             },
@@ -227,73 +52,7 @@ function statistics() {
                     this.authorKeyShowChart.showLoading();
                     this.venueKeyShowChart.showLoading();
                     this.institutionKeyShowChart.showLoading();
-                    this.$http.get("/statistics/getOneKeyAttribute/"+this.nowDict+"/author"+"/"+this.nowKeyWord).then(function (authorResponse) {
-                        var authorKeyList=authorResponse.data;
-                        var authorNameKey=[];
-                        var authorNameNum=[];
-                        for(var i=0;i<authorKeyList.length;i++){
-                            authorNameKey.push(authorKeyList[i].key);
-                            authorNameNum.push(authorKeyList[i].num);
-                        }
-                        statisticsVue.authorKeyShowChart.hideLoading();
-                        console.log("开始重绘authorKey图");
-                        statisticsVue.authorKeyShowChart.setOption({
-                            title: {
-                                text: '作者词频分布:'+this.nowKeyWord
-                            },
-                            xAxis:{
-                                data:authorNameKey
-                            },
-                            series:[
-                                {name:'author',type:'line',smooth:true,data:authorNameNum},
-
-                            ]
-                        });
-                    })
-                    this.$http.get("/statistics/getOneKeyAttribute/"+this.nowDict+"/venue"+"/"+this.nowKeyWord).then(function (venueResponse) {
-                        var venueKeyList=venueResponse.data;
-                        var venueNameKey=[];
-                        var venueNameNum=[];
-                        for(var i=0;i<venueKeyList.length;i++){
-                            venueNameKey.push(venueKeyList[i].key);
-                            venueNameNum.push(venueKeyList[i].num);
-                        }
-                        statisticsVue.venueKeyShowChart.hideLoading();
-                        console.log("开始重绘venueKey图");
-                        statisticsVue.venueKeyShowChart.setOption({
-                            title: {
-                                text: '期刊词频分布:'+this.nowKeyWord
-                            },
-                            xAxis:{
-                                data:venueNameKey
-                            },
-                            series:[
-                                {name:'venue',type:'line',smooth:true,data:venueNameNum},
-                            ]
-                        });
-                    })
-                    this.$http.get("/statistics/getOneKeyAttribute/"+this.nowDict+"/institution"+"/"+this.nowKeyWord).then(function (institutionResponse) {
-                        var institutionKeyList=institutionResponse.data;
-                        var institutionNameKey=[];
-                        var institutionNameNum=[];
-                        for(var i=0;i<institutionKeyList.length;i++){
-                            institutionNameKey.push(institutionKeyList[i].key);
-                            institutionNameNum.push(institutionKeyList[i].num);
-                        }
-                        statisticsVue.institutionKeyShowChart.hideLoading();
-                        console.log("开始重绘institutionKey图");
-                        statisticsVue.institutionKeyShowChart.setOption({
-                            title: {
-                                text: '机构词频分布:'+this.nowKeyWord
-                            },
-                            xAxis:{
-                                data:institutionNameKey
-                            },
-                            series:[
-                                {name:'institution',type:'line',smooth:true,data:institutionNameNum}
-                            ]
-                        });
-                    });
+                    this.showThreeAttribute();
                     toastr.success("加载成功！");
                 } else {
                     toastr.error("不存在该关键词");
@@ -370,6 +129,178 @@ function statistics() {
                         current = 0;
                     }
                 })
+            },
+            showThreeAttribute:function () {
+                statisticsVue.$http.get("/statistics/getOneKeyAttribute/"+statisticsVue.nowDict+"/author"+"/"+statisticsVue.nowKeyWord).then(function (authorResponse) {
+                    var authorKeyList=authorResponse.data;
+                    var authorNameKey=[];
+                    var authorNameNum=[];
+                    var authorListShowNum=authorKeyList.length<71?authorKeyList.length:70;
+                    for(var i=0;i<authorListShowNum;i++){
+                        authorNameKey.push(authorKeyList[i].key);
+                        authorNameNum.push(authorKeyList[i].num);
+                    }
+                    statisticsVue.authorKeyShowChart.hideLoading();
+                    console.log("开始重绘authorKey图");
+                    statisticsVue.authorKeyShowChart.setOption({
+                        title: {
+                            text: '作者词频分布:'+this.nowKeyWord+"("+authorKeyList.length+")"
+                        },
+                        xAxis:{
+                            data:authorNameKey
+                        },
+                        series:[
+                            {name:'author',type:'line',smooth:true,data:authorNameNum},
+
+                        ]
+                    });
+                })
+                statisticsVue.$http.get("/statistics/getOneKeyAttribute/"+statisticsVue.nowDict+"/venue"+"/"+statisticsVue.nowKeyWord).then(function (venueResponse) {
+                    var venueKeyList=venueResponse.data;
+                    var venueNameKey=[];
+                    var venueNameNum=[];
+                    for(var i=0;i<venueKeyList.length;i++){
+                        venueNameKey.push(venueKeyList[i].key);
+                        venueNameNum.push(venueKeyList[i].num);
+                    }
+                    statisticsVue.venueKeyShowChart.hideLoading();
+                    console.log("开始重绘venueKey图");
+                    statisticsVue.venueKeyShowChart.setOption({
+                        title: {
+                            text: '期刊词频分布:'+this.nowKeyWord
+                        },
+                        xAxis:{
+                            data:venueNameKey
+                        },
+                        series:[
+                            {name:'venue',type:'line',smooth:true,data:venueNameNum},
+                        ]
+                    });
+                })
+                statisticsVue.$http.get("/statistics/getOneKeyAttribute/"+statisticsVue.nowDict+"/institution"+"/"+statisticsVue.nowKeyWord).then(function (institutionResponse) {
+                    var institutionKeyList=institutionResponse.data;
+                    var institutionNameKey=[];
+                    var institutionNameNum=[];
+                    var institutionListShowNum=institutionKeyList.length<71?institutionKeyList.length:70;
+                    for(var i=0;i<institutionListShowNum;i++){
+                        institutionNameKey.push(institutionKeyList[i].key);
+                        institutionNameNum.push(institutionKeyList[i].num);
+                    }
+                    statisticsVue.institutionKeyShowChart.hideLoading();
+                    console.log("开始重绘institutionKey图");
+                    statisticsVue.institutionKeyShowChart.setOption({
+                        title: {
+                            text: '机构词频分布:'+this.nowKeyWord+"("+institutionKeyList.length+")"
+                        },
+                        xAxis:{
+                            data:institutionNameKey
+                        },
+                        series:[
+                            {name:'institution',type:'line',smooth:true,data:institutionNameNum}
+                        ]
+                    });
+                })
+
+            },
+            shiftDictFile:function () {
+                statisticsVue.$http.get("/statistics/getAllKeyWords/"+statisticsVue.nowDict+"/author").then(function (response) {
+
+                    var resAuthorDict=response.data;
+                    var authorKey=[];
+                    var authorNum=[];
+                    var venueNum=[];
+                    var institutionNum=[];
+
+                    statisticsVue.searchResult=resAuthorDict;
+                    for(var i=0;i<resAuthorDict.length;i++){
+                        var item=resAuthorDict[i];
+
+                        authorKey.push(item.key);
+                        authorNum.push(item.num);
+                    }
+                    console.log(authorKey);
+                    statisticsVue.allKeyWords=authorKey;
+                    statisticsVue.nowKeyWord=authorKey[0];
+
+                    statisticsVue.generalShowChart.hideLoading();
+                    console.log("开始重绘总览图");
+
+                    //避免卡顿，只绘制前70个关键词
+                    var authorArry = [];
+                    for(var i=0;i<70;i++){
+                        var item={
+                            name: authorKey[i],
+                            value: authorNum[i],
+                        }
+                        authorArry.push(item);
+                    }
+
+                    statisticsVue.generalShowChart.setOption({
+
+                        series:[
+                            {name:'keyword',
+                                type:'graph',
+                                layout: 'force',
+                                data:authorArry,
+                                roam:true,
+                                symbolSize: function (data) {
+                                    // console.log(data);
+                                    return Math.round(15 + data * 80 / authorNum[0]);
+                                },
+                                label: {
+                                    normal: {
+                                        show: true
+                                    },
+                                    emphasis: {
+                                        show: true,
+                                        formatter: function (param) {
+                                            return param.name;
+                                        },
+                                        color: 'black'
+                                    }
+                                },
+                                force:{
+                                    repulsion: 65
+                                }
+                            },
+                        ]
+                    });
+
+                    statisticsVue.showThreeAttribute();
+
+                    // statisticsVue.$http.get("/statistics/getAllKeyWords/"+statisticsVue.nowDict+"/venue").then(function (venueResponse) {
+                    //     console.log("获取到了venue数据");
+                    //     var venueList=venueResponse.data;
+                    //
+                    //     for(var i=0;i<authorKey.length;i++){
+                    //         for(var j=0;j<venueList.length;j++){
+                    //             if (venueList[j].key==authorKey[i]){
+                    //                 venueNum.push(venueList[j].num);
+                    //                 break;
+                    //             }
+                    //         }
+                    //     }
+                    //
+                    //     statisticsVue.$http.get("/statistics/getAllKeyWords/"+statisticsVue.nowDict+"/institution").then(function (institutionResponse) {
+                    //         console.log("获取到了institution数据");
+                    //         var institutionList=institutionResponse.data;
+                    //         for(var i=0;i<authorKey.length;i++){
+                    //             for(var j=0;j<institutionList.length;j++){
+                    //                 if (institutionList[j].key==authorKey[i]){
+                    //                     institutionNum.push(institutionList[j].num);
+                    //                     break;
+                    //                 }
+                    //             }
+                    //         }
+                    //
+                    //
+                    //
+                    //     });
+                    //
+                    // });
+
+                });
+                toastr.success("初始化成功!");
             }
         },
         mounted:function () {
@@ -515,188 +446,9 @@ function statistics() {
                 } else{
                     this.statisticsDicts=dicts;
                     this.nowDict=this.statisticsDicts[0];
+                    this.shiftDictFile();
 
-                    statisticsVue.$http.get("/statistics/getAllKeyWords/"+statisticsVue.nowDict+"/author").then(function (response) {
-
-                        var resAuthorDict=response.data;
-                        var authorKey=[];
-                        var authorNum=[];
-                        var venueNum=[];
-                        var institutionNum=[];
-
-                        statisticsVue.searchResult=resAuthorDict;
-                        for(var i=0;i<resAuthorDict.length;i++){
-                            var item=resAuthorDict[i];
-
-                            authorKey.push(item.key);
-                            authorNum.push(item.num);
-                        }
-                        console.log(authorKey);
-                        statisticsVue.allKeyWords=authorKey;
-                        // statisticsVue.searchResult=authorKey;
-                        statisticsVue.nowKeyWord=authorKey[0];
-                        // statisticsVue.generalShowChart.setOption({
-                        //     xAxis:{
-                        //         data:authorKey
-                        //     },
-                        //     series:[{
-                        //         name:'author',
-                        //         data:authorNum
-                        //     }]
-                        // });
-
-                        statisticsVue.$http.get("/statistics/getAllKeyWords/"+this.nowDict+"/venue").then(function (venueResponse) {
-                            console.log("获取到了venue数据");
-                            var venueList=venueResponse.data;
-
-                            for(var i=0;i<authorKey.length;i++){
-                                for(var j=0;j<venueList.length;j++){
-                                    if (venueList[j].key==authorKey[i]){
-                                        venueNum.push(venueList[j].num);
-                                        break;
-                                    }
-                                }
-                            }
-
-                            statisticsVue.$http.get("/statistics/getAllKeyWords/"+this.nowDict+"/institution").then(function (institutionResponse) {
-                                console.log("获取到了institution数据");
-                                var institutionList=institutionResponse.data;
-                                for(var i=0;i<authorKey.length;i++){
-                                    for(var j=0;j<institutionList.length;j++){
-                                        if (institutionList[j].key==authorKey[i]){
-                                            institutionNum.push(institutionList[j].num);
-                                            break;
-                                        }
-                                    }
-                                }
-
-                                statisticsVue.generalShowChart.hideLoading();
-                                console.log("开始重绘总览图");
-
-                                //避免卡顿，只绘制前70个关键词
-                                var authorArry = [];
-                                for(var i=0;i<70;i++){
-                                    var item={
-                                        name: authorKey[i],
-                                        value: authorNum[i],
-                                    }
-                                    authorArry.push(item);
-                                }
-
-                                statisticsVue.generalShowChart.setOption({
-
-                                    series:[
-                                        {name:'keyword',
-                                            type:'graph',
-                                            layout: 'force',
-                                            data:authorArry,
-                                            roam:true,
-                                            symbolSize: function (data) {
-                                                // console.log(data);
-                                                return Math.round(15 + data * 80 / authorNum[0]);
-                                            },
-                                            label: {
-                                                normal: {
-                                                    show: true
-                                                },
-                                                emphasis: {
-                                                    show: true,
-                                                    formatter: function (param) {
-                                                        return param.name;
-                                                    },
-                                                    color: 'black'
-                                                }
-                                            },
-                                            force:{
-                                                repulsion: 65
-                                            }
-                                        },
-                                    ]
-                                });
-
-                                //鼠标点击事件
-                                // statisticsVue.generalShowChart.on('click', function (params) {
-                                //     // console.log(params.name);
-                                // });
-
-
-
-
-                                statisticsVue.$http.get("/statistics/getOneKeyAttribute/"+statisticsVue.nowDict+"/author"+"/"+statisticsVue.nowKeyWord).then(function (authorResponse) {
-                                    var authorKeyList=authorResponse.data;
-                                    var authorNameKey=[];
-                                    var authorNameNum=[];
-                                    for(var i=0;i<authorKeyList.length;i++){
-                                        authorNameKey.push(authorKeyList[i].key);
-                                        authorNameNum.push(authorKeyList[i].num);
-                                    }
-                                    statisticsVue.authorKeyShowChart.hideLoading();
-                                    console.log("开始重绘authorKey图");
-                                    statisticsVue.authorKeyShowChart.setOption({
-                                        title: {
-                                            text: '作者词频分布:'+this.nowKeyWord
-                                        },
-                                        xAxis:{
-                                            data:authorNameKey
-                                        },
-                                        series:[
-                                            {name:'author',type:'line',smooth:true,data:authorNameNum},
-
-                                        ]
-                                    });
-                                })
-                                statisticsVue.$http.get("/statistics/getOneKeyAttribute/"+statisticsVue.nowDict+"/venue"+"/"+statisticsVue.nowKeyWord).then(function (venueResponse) {
-                                    var venueKeyList=venueResponse.data;
-                                    var venueNameKey=[];
-                                    var venueNameNum=[];
-                                    for(var i=0;i<venueKeyList.length;i++){
-                                        venueNameKey.push(venueKeyList[i].key);
-                                        venueNameNum.push(venueKeyList[i].num);
-                                    }
-                                    statisticsVue.venueKeyShowChart.hideLoading();
-                                    console.log("开始重绘venueKey图");
-                                    statisticsVue.venueKeyShowChart.setOption({
-                                        title: {
-                                            text: '期刊词频分布:'+this.nowKeyWord
-                                        },
-                                        xAxis:{
-                                            data:venueNameKey
-                                        },
-                                        series:[
-                                            {name:'venue',type:'line',smooth:true,data:venueNameNum},
-                                        ]
-                                    });
-                                })
-                                statisticsVue.$http.get("/statistics/getOneKeyAttribute/"+statisticsVue.nowDict+"/institution"+"/"+statisticsVue.nowKeyWord).then(function (institutionResponse) {
-                                    var institutionKeyList=institutionResponse.data;
-                                    var institutionNameKey=[];
-                                    var institutionNameNum=[];
-                                    for(var i=0;i<institutionKeyList.length;i++){
-                                        institutionNameKey.push(institutionKeyList[i].key);
-                                        institutionNameNum.push(institutionKeyList[i].num);
-                                    }
-                                    statisticsVue.institutionKeyShowChart.hideLoading();
-                                    console.log("开始重绘institutionKey图");
-                                    statisticsVue.institutionKeyShowChart.setOption({
-                                        title: {
-                                            text: '机构词频分布:'+this.nowKeyWord
-                                        },
-                                        xAxis:{
-                                            data:institutionNameKey
-                                        },
-                                        series:[
-                                            {name:'institution',type:'line',smooth:true,data:institutionNameNum}
-                                        ]
-                                    });
-                                })
-
-                            });
-
-                        });
-
-                    })
                 }
-                toastr.success("初始化成功");
 
             });
 
@@ -706,74 +458,8 @@ function statistics() {
                 statisticsVue.authorKeyShowChart.showLoading();
                 statisticsVue.venueKeyShowChart.showLoading();
                 statisticsVue.institutionKeyShowChart.showLoading();
-                statisticsVue.$http.get("/statistics/getOneKeyAttribute/"+statisticsVue.nowDict+"/author"+"/"+statisticsVue.nowKeyWord).then(function (authorResponse) {
-                    var authorKeyList=authorResponse.data;
-                    var authorNameKey=[];
-                    var authorNameNum=[];
-                    for(var i=0;i<authorKeyList.length;i++){
-                        authorNameKey.push(authorKeyList[i].key);
-                        authorNameNum.push(authorKeyList[i].num);
-                    }
-                    statisticsVue.authorKeyShowChart.hideLoading();
-                    console.log("开始重绘authorKey图");
-                    statisticsVue.authorKeyShowChart.setOption({
-                        title: {
-                            text: '作者词频分布:'+this.nowKeyWord
-                        },
-                        xAxis:{
-                            data:authorNameKey
-                        },
-                        series:[
-                            {name:'author',type:'line',smooth:true,data:authorNameNum},
-
-                        ]
-                    });
-                })
-                statisticsVue.$http.get("/statistics/getOneKeyAttribute/"+statisticsVue.nowDict+"/venue"+"/"+statisticsVue.nowKeyWord).then(function (venueResponse) {
-                    var venueKeyList=venueResponse.data;
-                    var venueNameKey=[];
-                    var venueNameNum=[];
-                    for(var i=0;i<venueKeyList.length;i++){
-                        venueNameKey.push(venueKeyList[i].key);
-                        venueNameNum.push(venueKeyList[i].num);
-                    }
-                    statisticsVue.venueKeyShowChart.hideLoading();
-                    console.log("开始重绘venueKey图");
-                    statisticsVue.venueKeyShowChart.setOption({
-                        title: {
-                            text: '期刊词频分布:'+this.nowKeyWord
-                        },
-                        xAxis:{
-                            data:venueNameKey
-                        },
-                        series:[
-                            {name:'venue',type:'line',smooth:true,data:venueNameNum},
-                        ]
-                    });
-                })
-                statisticsVue.$http.get("/statistics/getOneKeyAttribute/"+statisticsVue.nowDict+"/institution"+"/"+statisticsVue.nowKeyWord).then(function (institutionResponse) {
-                    var institutionKeyList=institutionResponse.data;
-                    var institutionNameKey=[];
-                    var institutionNameNum=[];
-                    for(var i=0;i<institutionKeyList.length;i++){
-                        institutionNameKey.push(institutionKeyList[i].key);
-                        institutionNameNum.push(institutionKeyList[i].num);
-                    }
-                    statisticsVue.institutionKeyShowChart.hideLoading();
-                    console.log("开始重绘institutionKey图");
-                    statisticsVue.institutionKeyShowChart.setOption({
-                        title: {
-                            text: '机构词频分布:'+this.nowKeyWord
-                        },
-                        xAxis:{
-                            data:institutionNameKey
-                        },
-                        series:[
-                            {name:'institution',type:'line',smooth:true,data:institutionNameNum}
-                        ]
-                    });
-                });
-                toastr.success("获取关键词："+params.name);
+                statisticsVue.showThreeAttribute();
+                toastr.success("获取关键词："+params.name+" 成功!");
 
             });
 

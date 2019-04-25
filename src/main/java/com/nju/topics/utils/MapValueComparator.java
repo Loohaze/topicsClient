@@ -13,11 +13,19 @@ public class MapValueComparator implements Comparator<String> {
     }
 
     public int compare(String a, String b) {
-        if (base.get(a).intValue() >= base.get(b).intValue()) {
+        try {
+            if (base.get(a).intValue() >= base.get(b).intValue()) {
+                return -1;
+            } else {
+                return 1;
+            }
+        }catch (NullPointerException e){
+//            e.printStackTrace();
+//            System.err.println("a:"+a+"--"+base.get(a));
+//            System.err.println("b:"+b+"--"+base.get(b));
             return -1;
-        } else {
-            return 1;
         }
+
     }
 
     public static <K, V extends Comparable<V>> Map<K, V> sortByValues(

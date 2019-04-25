@@ -44,6 +44,30 @@ public class SegmentsImpl implements Segments {
     public PageDataInfo getAllSegments(String segName) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         System.out.println("接收到请求segment，文件：" + segName + ",时间：" + dateFormat.format((new Date())));
+        List<Segment> result = getSegmentsNoneCondition(segName);
+
+        System.out.println("获取到所有segment，文件：" + segName + ",时间：" + dateFormat.format((new Date())));
+
+        PageDataInfo pageDataInfo=new PageDataInfo();
+        if (result.size()>config.getPerPageNum()){
+            int pages=(int)Math.ceil(result.size()*1.0/config.getPerPageNum());
+            List<Segment> finalResList=new ArrayList<>();
+            for(int i=0;i<config.getPerPageNum();i++){
+                finalResList.add(result.get(i));
+            }
+            pageDataInfo.setPageNum(pages);
+            pageDataInfo.setPageData(finalResList);
+        }else {
+            pageDataInfo.setPageNum(1);
+            pageDataInfo.setPageData(result);
+
+        }
+
+        return pageDataInfo;
+    }
+
+    @Override
+    public List<Segment> getSegmentsNoneCondition(String segName) {
         List<Segment> result = new ArrayList<>();
         File segmentsFile = null;
         try {
@@ -82,25 +106,7 @@ public class SegmentsImpl implements Segments {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        System.out.println("获取到所有segment，文件：" + segName + ",时间：" + dateFormat.format((new Date())));
-
-        PageDataInfo pageDataInfo=new PageDataInfo();
-        if (result.size()>config.getPerPageNum()){
-            int pages=(int)Math.ceil(result.size()*1.0/config.getPerPageNum());
-            List<Segment> finalResList=new ArrayList<>();
-            for(int i=0;i<config.getPerPageNum();i++){
-                finalResList.add(result.get(i));
-            }
-            pageDataInfo.setPageNum(pages);
-            pageDataInfo.setPageData(finalResList);
-        }else {
-            pageDataInfo.setPageNum(1);
-            pageDataInfo.setPageData(result);
-
-        }
-
-        return pageDataInfo;
+        return result;
     }
 
     @Override
