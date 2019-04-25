@@ -4,7 +4,7 @@ import com.nju.topics.config.Config;
 import com.nju.topics.domain.Segment;
 import com.nju.topics.domain.StatisticsInfo;
 import com.nju.topics.entity.HistoryAuthorEntity;
-import com.nju.topics.entitysevice.HistoryAuthorsService;
+import com.nju.topics.dao.HistoryAuthorsService;
 import com.nju.topics.service.Segments;
 import com.nju.topics.service.StatisticsService;
 import com.nju.topics.utils.MapValueComparator;

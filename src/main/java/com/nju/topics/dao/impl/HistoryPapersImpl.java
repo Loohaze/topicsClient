@@ -1,10 +1,10 @@
-package com.nju.topics.entitysevice.impl;
+package com.nju.topics.dao.impl;
 
 import com.nju.topics.config.Config;
 import com.nju.topics.domain.TagInfo;
 import com.nju.topics.domain.TreeDataInfo;
 import com.nju.topics.entity.HistoryPapersEntity;
-import com.nju.topics.entitysevice.HistoryPapersSerivce;
+import com.nju.topics.dao.HistoryPapersSerivce;
 import com.nju.topics.utils.MapValueComparator;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
@@ -23,8 +23,6 @@ import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
-import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
-import org.springframework.data.elasticsearch.core.query.SearchQuery;
 import org.springframework.stereotype.Component;
 
 import java.io.*;

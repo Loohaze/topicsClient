@@ -4,8 +4,8 @@ import com.nju.topics.domain.StatisticsInfo;
 import com.nju.topics.domain.TreeDataInfo;
 import com.nju.topics.entity.HistoryAuthorEntity;
 import com.nju.topics.entity.HistoryPapersEntity;
-import com.nju.topics.entitysevice.HistoryAuthorsService;
-import com.nju.topics.entitysevice.HistoryPapersSerivce;
+import com.nju.topics.dao.HistoryAuthorsService;
+import com.nju.topics.dao.HistoryPapersSerivce;
 import com.nju.topics.service.StatisticsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 @RequestMapping("/statistics")

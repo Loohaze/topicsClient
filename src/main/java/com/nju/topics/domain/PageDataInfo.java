@@ -1,6 +1,5 @@
 package com.nju.topics.domain;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class PageDataInfo {
@@ -10,7 +9,6 @@ public class PageDataInfo {
     public int getPageNum() {
         return pageNum;
     }
-
 
     public void setPageNum(int pageNum) {
         this.pageNum = pageNum;
@@ -24,3 +22,4 @@ public class PageDataInfo {
         return pageData;
     }
 }
+

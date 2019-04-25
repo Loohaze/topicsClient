@@ -1,4 +1,4 @@
-package com.nju.topics.entitysevice;
+package com.nju.topics.dao;
 
 import com.nju.topics.domain.TagInfo;
 import com.nju.topics.domain.TreeDataInfo;

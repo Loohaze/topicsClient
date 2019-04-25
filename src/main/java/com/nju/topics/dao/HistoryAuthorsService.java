@@ -1,9 +1,8 @@
-package com.nju.topics.entitysevice;
+package com.nju.topics.dao;
 
 import com.nju.topics.domain.StatisticsInfo;
 import com.nju.topics.entity.HistoryAuthorEntity;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 

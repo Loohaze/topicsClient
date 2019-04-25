@@ -125,7 +125,13 @@ public class FileServiceImpl implements FileService {
         try {
             bufferedReader=new BufferedReader(new FileReader(dictLogFile));
             while ((line=bufferedReader.readLine())!=null){
-                res=res+line+"<br/>";
+                if(line.contains("add:")||line.contains("all:")){
+                    String[] wordLine=line.split(":");
+                    line=wordLine[0]+":"+wordLine[1];
+                    res=res+line+"<br/>";
+                }else{
+                    res=res+line+"<br/>";
+                }
             }
         }catch (IOException e){
             e.printStackTrace();

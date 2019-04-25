@@ -1,11 +1,11 @@
-package com.nju.topics.entitysevice.impl;
+package com.nju.topics.dao.impl;
 
 import com.nju.topics.config.Config;
 import com.nju.topics.domain.StatisticsInfo;
 import com.nju.topics.entity.HistoryAuthorEntity;
 import com.nju.topics.entity.HistoryPapersEntity;
-import com.nju.topics.entitysevice.HistoryAuthorsService;
-import com.nju.topics.entitysevice.HistoryPapersSerivce;
+import com.nju.topics.dao.HistoryAuthorsService;
+import com.nju.topics.dao.HistoryPapersSerivce;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;

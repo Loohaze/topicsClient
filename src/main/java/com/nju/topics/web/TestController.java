@@ -1,19 +1,14 @@
 package com.nju.topics.web;
 
-import com.nju.topics.domain.StatisticsInfo;
 import com.nju.topics.domain.TagInfo;
-import com.nju.topics.domain.TreeDataInfo;
-import com.nju.topics.entity.HistoryAuthorEntity;
-import com.nju.topics.entity.HistoryPapersEntity;
-import com.nju.topics.entitysevice.HistoryAuthorsService;
-import com.nju.topics.entitysevice.HistoryPapersSerivce;
+import com.nju.topics.dao.HistoryAuthorsService;
+import com.nju.topics.dao.HistoryPapersSerivce;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
-import java.util.List;
 
 @RestController
 public class TestController {
