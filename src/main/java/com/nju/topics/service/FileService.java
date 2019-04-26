@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public interface FileService {
     public ArrayList<String> getAllSegmentFile();
 
-    public ArrayList<DictFileInfo> getAllDictDile();
+    public ArrayList<DictFileInfo> getAllDictFile();
 
     public String uploadSegmentFile(MultipartFile file);
 

@@ -60,6 +60,9 @@ public class Config {
     @Value("${pair.file.path}")
     private String pairFilePath;
 
+    @Value("${dict.statistics.path}")
+    private String dictStatisticsPath;
+
     private long preGetNum=0;
 
     private int perPageNum=500;
@@ -156,5 +159,9 @@ public class Config {
 
     public int getPerPageNum() {
         return perPageNum;
+    }
+
+    public String getDictStatisticsPath() {
+        return dictStatisticsPath;
     }
 }

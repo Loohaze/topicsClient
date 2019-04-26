@@ -41,7 +41,7 @@ public class FileController {
     @RequestMapping("/getAllDictFiles")
     @ResponseBody
     public ArrayList<DictFileInfo> getAllDictFiles(){
-        return fileService.getAllDictDile();
+        return fileService.getAllDictFile();
     }
 
     @RequestMapping("/download/{fileName}")

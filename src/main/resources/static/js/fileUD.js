@@ -11,7 +11,7 @@ function fileUD() {
         el:"#fileVue",
         data:{
             segFiles:[],
-            dictFiles:[]
+            dictFiles:[{name:"testFile",size:2}]
         },
         methods:{
             downLoad:function (dictFile) {

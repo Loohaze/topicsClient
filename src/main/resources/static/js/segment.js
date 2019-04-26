@@ -80,6 +80,7 @@ function segmentTrain() {
                 });
             },
             rerun:function(){
+                $("#reRunButton").attr("disabled","disabled");
               this.$http.get("/seg/rerun/"+this.nowSegmentFile)
                   .then(function (response) {
                       console.log("rerun console:");
@@ -89,6 +90,7 @@ function segmentTrain() {
                   } else{
                       toastr.error(response.bodyText);
                   }
+                      $("#reRunButton").attr("disabled",false);
               })
             },
             prePage:function(){

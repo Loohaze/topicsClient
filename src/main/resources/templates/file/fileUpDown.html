@@ -42,7 +42,6 @@
 
     <!--<form method="post" id="fileForm"  enctype="multipart/form-data" >-->
     <form method="post" action="/file/upload" id="fileForm"  enctype="multipart/form-data" @submit.prevent="uploadFile">
-    <!--<form method="post" action="/file/upload" id="fileForm"  enctype="multipart/form-data" @submit.prevent="uploadFile">-->
         <div class="row" id="upFile">
             <div class="col-sm-1 col-md-3"></div>
             <div class="col-sm-7 col-md-5">
@@ -80,8 +79,10 @@
                 <td>{{dictFile.name}}</td>
                 <td>{{dictFile.size}}KB</td>
                 <td>
-                    <button type="button" class="btn btn-default" v-on:click="downLoadSource(dictFile)">下载源</button>
-                    <button type="button" class="btn btn-default" v-on:click="downLoad(dictFile)">下载词</button>
+<!--                    <button type="button" class="btn btn-default" v-on:click="downLoadSource(dictFile)">下载源</button>-->
+                    <button type="button" class="btn btn-default" v-on:click="downLoad(dictFile)">词典 <i class="fa fa-download"></i></button>
+                    <button type="button" class="btn btn-success" v-on:click="downLoad(dictFile)">词频 <i class="fa fa-download"></i></button>
+                    <button type="button" class="btn btn-info" v-on:click="downLoad(dictFile)"><i class="fa fa-pencil"></i> 词典</button>
                 </td>
             </tr>
 

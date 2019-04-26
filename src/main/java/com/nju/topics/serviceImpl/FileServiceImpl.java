@@ -39,7 +39,7 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public ArrayList<DictFileInfo> getAllDictDile() {
+    public ArrayList<DictFileInfo> getAllDictFile() {
         ArrayList<DictFileInfo> dictFileInfos=new ArrayList<>();
         String folder=config.getDownloadPath();
         File dictFolder=new File(folder);

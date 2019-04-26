@@ -20,9 +20,7 @@ public class MapValueComparator implements Comparator<String> {
                 return 1;
             }
         }catch (NullPointerException e){
-//            e.printStackTrace();
-//            System.err.println("a:"+a+"--"+base.get(a));
-//            System.err.println("b:"+b+"--"+base.get(b));
+            e.printStackTrace();
             return -1;
         }
 

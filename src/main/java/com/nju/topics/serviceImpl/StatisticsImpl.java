@@ -119,12 +119,8 @@ public class StatisticsImpl implements StatisticsService {
     public ArrayList<StatisticsInfo> getAllKeyWordsByES(){
         ArrayList<StatisticsInfo> statisticsInfos=new ArrayList<>();
         Map<String,Integer> allKeyWords=historyPapersSerivce.getAllTagsAndTimes();
-//        for (Map.Entry<String,Integer> allKeyFromByc:allKeyWords.entrySet()){
-//            System.out.println(allKeyFromByc.getKey()+":"+allKeyFromByc.getValue());
-//        }
         Map<String,Integer> sortMap=new HashMap<>();
 
-//        Segments segmentsService = new SegmentsImpl();
         List<Segment> segList = (segmentsService.getSegmentsNoneCondition("history.txt"));
 
         for(int i=0;i<segList.size();i++){
@@ -141,7 +137,6 @@ public class StatisticsImpl implements StatisticsService {
                 }else{
                     allKeyWords.put((tempSegEntry.getKey()).toString(),allKeyWords.get(tempSegEntry.getKey()).intValue()+tempSegEntry.getValue().intValue() );
                 }
-//                System.err.println(tempSegEntry.getKey()+":"+allKeyWords.get(tempSegEntry.getKey())+"--"+allKeyWords.containsKey(tempSegEntry.getKey()));
             }
         }
 

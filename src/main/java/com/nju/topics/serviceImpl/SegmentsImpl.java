@@ -446,7 +446,7 @@ public class SegmentsImpl implements Segments {
                         //开始写入excel,创建模型文件头
                 String[] titleA = {"关键词","词频"};
                 //创建Excel文件
-                String filePath=config.getDownloadPath()+segName.split("\\.")[0]+".xls";
+                String filePath=config.getDictStatisticsPath()+segName.split("\\.")[0]+".xls";
                 File fileA = new File(filePath);
                 if(fileA.exists()){
                     //如果文件存在就删除
