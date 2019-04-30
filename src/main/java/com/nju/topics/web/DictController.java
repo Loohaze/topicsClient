@@ -35,7 +35,7 @@ public class DictController {
 
     @RequestMapping("/modifyDictFile/{dictName}/{segs}")
     public ResponseInfo modifyDictFile(@PathVariable("dictName")String dictName, @PathVariable("segs")List<String> segs){
-        return dict.modifyDictFile(dictName,segs);
+         return dict.modifyDictFile(dictName,segs);
     }
 
     @PostMapping("/delete/{dictName}/{seg}")

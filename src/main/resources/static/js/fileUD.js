@@ -75,8 +75,10 @@ function fileUD() {
                         }
                         // console.log("list-newEditDict:"+newDictList);
                         // this.$http.get("/dict/modifyDictFile/"+this.nowEditFileName+"/"+newDictList)
-                        this.$http.post("/dict/addDictList/"+this.nowEditFileName+"/"+newDictList)
+                        this.$http.get("/dict/modifyDictFile/"+this.nowEditFileName+"/"+newDictList)
                             .then(function (value) {
+                                console.log(value);
+                                // toastr.success("success");
                                 var responseData=value.data;
                                 if (responseData.result=="success"){
                                     toastr.success(responseData.description);

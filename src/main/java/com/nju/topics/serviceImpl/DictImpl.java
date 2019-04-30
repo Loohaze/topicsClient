@@ -133,20 +133,29 @@ public class DictImpl implements Dict {
         try {
             String dictPath = config.getDownloadPath() + dictName;
             dict = ResourceUtils.getFile(dictPath);
-            long sameNum=0;
-            OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(dict, false));
+            int addNum=0;
+            OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(dict, true));
             BufferedWriter bufferedWriter = new BufferedWriter(writer);
+//            for (String word : words) {
+//                if (dictMap.containsKey(word)) {
+//                    sameNum++;
+//                }
+//                bufferedWriter.write(word + " " + Config.DEFAULT_NUM + System.getProperty("line.separator"));
+//            }
+
             for (String word : words) {
-                if (dictMap.containsKey(word)) {
-                    sameNum++;
+                if (!dictMap.containsKey(word)) {
+                    addNum++;
+                    bufferedWriter.write(word + " " + Config.DEFAULT_NUM + System.getProperty("line.separator"));
+                    dictMap.put(word,Config.DEFAULT_NUM);
                 }
-                bufferedWriter.write(word + " " + Config.DEFAULT_NUM + System.getProperty("line.separator"));
             }
+
             writer.flush();
             bufferedWriter.flush();
             bufferedWriter.close();
             writer.close();
-            if ((words.size()-sameNum)>150){
+            if (addNum>150){
                 segments.reRunPy(dictName);
                 responseInfo.setResult("success");
                 responseInfo.setDescription("修改成功，已重新分词");
