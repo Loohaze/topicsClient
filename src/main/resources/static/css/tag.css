@@ -90,3 +90,9 @@
     background-color: #a5574f;
     border-color: #a5574f;
 }
+
+#tagPageRow{
+    margin-bottom: 20px;
+    width: 78%;
+    margin-left: 5%;
+}

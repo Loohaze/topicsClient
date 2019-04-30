@@ -28,9 +28,13 @@ public interface HistoryPapersSerivce {
 
     public ArrayList<TagInfo> getTagInfosByTag(String tagName);
 
+    public ArrayList<TagInfo> getTagInfosByBeginEnd(int begin,int end);
+
     public void bulkUpdateTagsByTitle(String originName,ArrayList<String> tags);
 
     public ArrayList<String> getSomeTags();
 
     public Map<String,Integer> getAllTagsAndTimes();
+
+    public long getTotalRecordsNum(String index);
 }

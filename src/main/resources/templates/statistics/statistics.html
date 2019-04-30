@@ -87,10 +87,13 @@
     <div class="modal fade" id="authorTreeModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header">{{nowAuthor}}——文章图谱</div>
+                <div class="modal-header" style="text-align: center;">{{nowAuthor}}——文章图谱</div>
                 <div class="modal-body">
-                    <div class="row">最常合作作者</div>
-                    <div v-for="relation in relationList" class="col-xs-6">{{relation.key}}:{{relation.num}}</div>
+                    <div class="row" style="text-align: center">最常合作作者</div>
+                    <div v-for="relation in relationList">
+                        <div class="col-xs-4" style="text-align: right;">{{relation.key}}:</div>
+                        <div class="col-xs-2" style="text-align: left;">{{relation.num}}</div>
+                    </div>
                     <div class="singleChart" id="authorTreeChart"></div>
                 </div>
                 <div class="modal-footer">

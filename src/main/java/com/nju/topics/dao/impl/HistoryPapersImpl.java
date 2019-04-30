@@ -116,20 +116,8 @@ public class HistoryPapersImpl implements HistoryPapersSerivce {
         boolBuilder.should(QueryBuilders.wildcardQuery("Tags", "*"+paperName+"*"));
         SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
         sourceBuilder.query(boolBuilder);
-        sourceBuilder.from(0);
-        sourceBuilder.size(20000); // 获取记录数，默认10
-//        sourceBuilder.fetchSource(new String[] { "id", "name" }, new String[] {}); // 第一个是获取字段，第二个是过滤的字段，默认获取全部
-        SearchRequest searchRequest = new SearchRequest(config.getHistoryPaperIndex());
-//        searchRequest.types(type);
-        searchRequest.source(sourceBuilder);
-        SearchResponse response=new SearchResponse();
-        try {
-            response = restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
-        }catch (IOException e){
-            e.printStackTrace();
-        }
-//        System.out.println("search: " + (response).toString());
-        SearchHits hits = response.getHits();
+
+        SearchHits hits = getPaperSearchHits(sourceBuilder,0,20000);
         SearchHit[] searchHits = hits.getHits();
         for (SearchHit s:searchHits){
             HistoryPapersEntity historyPapersEntity=new HistoryPapersEntity();
@@ -156,22 +144,8 @@ public class HistoryPapersImpl implements HistoryPapersSerivce {
         SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
         sourceBuilder.query(boolBuilder);
 
-        sourceBuilder.from(0);
-        sourceBuilder.size(10000); // 获取记录数，默认10
 
-//        sourceBuilder.fetchSource(new String[] { "id", "name" }, new String[] {}); // 第一个是获取字段，第二个是过滤的字段，默认获取全部
-        SearchRequest searchRequest = new SearchRequest(config.getHistoryPaperIndex());
-//        searchRequest.types(type);
-        searchRequest.source(sourceBuilder);
-        SearchResponse response=new SearchResponse();
-        try {
-            response = restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
-        }catch (IOException e){
-            e.printStackTrace();
-        }
-//        System.out.println("search: " + (response).toString());
-
-        SearchHits hits = response.getHits();
+        SearchHits hits = getPaperSearchHits(sourceBuilder,0,20000);
         SearchHit[] searchHits = hits.getHits();
         for (SearchHit s:searchHits){
             HistoryPapersEntity historyPapersEntity=new HistoryPapersEntity();
@@ -347,22 +321,9 @@ public class HistoryPapersImpl implements HistoryPapersSerivce {
         sourceBuilder.query(boolBuilder);
 
 
-        sourceBuilder.from(0);
-        sourceBuilder.size(2000); // 获取记录数，默认10
 
-//        sourceBuilder.fetchSource(new String[] { "id", "name" }, new String[] {}); // 第一个是获取字段，第二个是过滤的字段，默认获取全部
-        SearchRequest searchRequest = new SearchRequest(config.getHistoryPaperIndex());
-//        searchRequest.types(type);
-        searchRequest.source(sourceBuilder);
-        SearchResponse response=new SearchResponse();
-        try {
-            response = restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
-        }catch (IOException e){
-            e.printStackTrace();
-        }
-//        System.out.println("search: " + (response).toString());
 
-        SearchHits hits = response.getHits();
+        SearchHits hits = getPaperSearchHits(sourceBuilder,0,20000);
         SearchHit[] searchHits = hits.getHits();
         ArrayList<String> snos=new ArrayList<>();
         BulkRequest updateBulkRequest=new BulkRequest();
@@ -416,8 +377,8 @@ public class HistoryPapersImpl implements HistoryPapersSerivce {
         boolBuilder.must(QueryBuilders.matchAllQuery());
         SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
         sourceBuilder.query(boolBuilder);
-        sourceBuilder.from(new Random(25).nextInt(9000));
-        resTagInfos=dealTagInfoTool(sourceBuilder);
+//        sourceBuilder.from(new Random(25).nextInt(9000));
+        resTagInfos=dealTagInfoTool(sourceBuilder,0,20000);
         return resTagInfos;
     }
 
@@ -432,16 +393,14 @@ public class HistoryPapersImpl implements HistoryPapersSerivce {
         sourceBuilder.query(boolBuilder);
         sourceBuilder.from(0);
 
-        resTagInfos=dealTagInfoTool(sourceBuilder);
+        resTagInfos=dealTagInfoTool(sourceBuilder,0,20000);
         return resTagInfos;
     }
 
-    public ArrayList<TagInfo> dealTagInfoTool(SearchSourceBuilder sourceBuilder){
-
-        ArrayList<TagInfo> resTagInfos=new ArrayList<>();
-
-        sourceBuilder.size(3000); // 获取记录数，默认10
-        sourceBuilder.fetchSource(new String[] { "LYPM", "BYC","Tags" }, new String[] {}); // 第一个是获取字段，第二个是过滤的字段，默认获取全部
+    public SearchHits getPaperSearchHits(SearchSourceBuilder sourceBuilder,int begin,int end){
+        sourceBuilder.from(begin);
+        sourceBuilder.size(begin+end); // 获取记录数，默认10
+//        sourceBuilder.fetchSource(new String[] { "LYPM", "BYC","Tags" }, new String[] {}); // 第一个是获取字段，第二个是过滤的字段，默认获取全部
         SearchRequest searchRequest = new SearchRequest(config.getHistoryPaperIndex());
 //        searchRequest.types(type);
         searchRequest.source(sourceBuilder);
@@ -453,6 +412,15 @@ public class HistoryPapersImpl implements HistoryPapersSerivce {
         }
 
         SearchHits hits = response.getHits();
+        return hits;
+    }
+
+    public ArrayList<TagInfo> dealTagInfoTool(SearchSourceBuilder sourceBuilder,int begin,int end){
+
+        ArrayList<TagInfo> resTagInfos=new ArrayList<>();
+
+
+        SearchHits hits = getPaperSearchHits(sourceBuilder,begin,end);
         SearchHit[] searchHits = hits.getHits();
         for (SearchHit s:searchHits){
             TagInfo tagInfo=new TagInfo();
@@ -504,22 +472,7 @@ public class HistoryPapersImpl implements HistoryPapersSerivce {
         sourceBuilder.query(boolBuilder);
 
 
-        sourceBuilder.from(0);
-        sourceBuilder.size(2000); // 获取记录数，默认10
-
-//        sourceBuilder.fetchSource(new String[] { "id", "name" }, new String[] {}); // 第一个是获取字段，第二个是过滤的字段，默认获取全部
-        SearchRequest searchRequest = new SearchRequest(config.getHistoryPaperIndex());
-//        searchRequest.types(type);
-        searchRequest.source(sourceBuilder);
-        SearchResponse response=new SearchResponse();
-        try {
-            response = restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
-        }catch (IOException e){
-            e.printStackTrace();
-        }
-//        System.out.println("search: " + (response).toString());
-
-        SearchHits hits = response.getHits();
+        SearchHits hits = getPaperSearchHits(sourceBuilder,0,20000);
         SearchHit[] searchHits = hits.getHits();
         ArrayList<String> snos=new ArrayList<>();
         BulkRequest updateBulkRequest=new BulkRequest();
@@ -576,20 +529,9 @@ public class HistoryPapersImpl implements HistoryPapersSerivce {
         boolBuilder.must(QueryBuilders.matchAllQuery());
         SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
         sourceBuilder.query(boolBuilder);
-        sourceBuilder.from(0);
-        sourceBuilder.size(20000); // 获取记录数，默认10
         sourceBuilder.fetchSource(new String[] { "BYC","Tags" }, new String[] {}); // 第一个是获取字段，第二个是过滤的字段，默认获取全部
-        SearchRequest searchRequest = new SearchRequest(config.getHistoryPaperIndex());
-//        searchRequest.types(type);
-        searchRequest.source(sourceBuilder);
-        SearchResponse response=new SearchResponse();
-        try {
-            response = restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
-        }catch (IOException e){
-            e.printStackTrace();
-        }
 
-        SearchHits hits = response.getHits();
+        SearchHits hits = getPaperSearchHits(sourceBuilder,0,20000);
         SearchHit[] searchHits = hits.getHits();
         Map<String,Integer> countMap=new HashMap<>();
         for (SearchHit s:searchHits){
@@ -630,5 +572,33 @@ public class HistoryPapersImpl implements HistoryPapersSerivce {
 
 
         return countMap;
+    }
+
+    @Override
+    public ArrayList<TagInfo> getTagInfosByBeginEnd(int begin, int end) {
+        BoolQueryBuilder boolBuilder = QueryBuilders.boolQuery();
+        boolBuilder.must(QueryBuilders.matchAllQuery());
+        SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
+        sourceBuilder.query(boolBuilder);
+        return dealTagInfoTool(sourceBuilder,begin,end);
+    }
+
+    @Override
+    public long getTotalRecordsNum(String index) {
+        BoolQueryBuilder boolBuilder = QueryBuilders.boolQuery();
+        boolBuilder.must(QueryBuilders.matchAllQuery());
+        SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
+        sourceBuilder.query(boolBuilder);
+        SearchRequest searchRequest = new SearchRequest(index);
+        searchRequest.source(sourceBuilder);
+        SearchResponse response=new SearchResponse();
+        try {
+            response = restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+
+        SearchHits hits = response.getHits();
+        return hits.getTotalHits();
     }
 }

@@ -18,7 +18,10 @@ function tag() {
             hotButtons:[],
             allTags:["tag1","tag2"],
             nowTag:"",
-            allShow:true
+            allShow:true,
+            totalPage:1,
+            lastEnterDate:"",
+            nowPage:1
         },
         methods:{
             chooseAddTag:function (tagInfo) {
@@ -30,6 +33,85 @@ function tag() {
             },
             showHot:function(){
                 this.hotShow=!this.hotShow;
+            },
+            preTagPage:function(){
+                if (this.nowPage==1){
+                    toastr.warning("已经是第一页了！");
+                }else{
+                    this.nowPage=this.nowPage-1;
+                    $("#pageInput").val(this.nowPage);
+                    this.getTagsByPage(this.nowPage);
+                }
+            },
+            postTagPage:function(){
+                if (this.nowPage==this.totalPage){
+                    toastr.warning("已经是最后一页了！")
+                } else{
+                    this.nowPage=this.nowPage+1;
+                    $("#pageInput").val(this.nowPage);
+                    this.getTagsByPage(this.nowPage);
+                }
+            },
+            choosePage:function(){
+                // this.showPageList=true;
+                $("#pageInput").keyup(function (e) {
+                    if (e.keyCode==13){
+                        if( (new Date()).getTime() - (tagVue.lastEnterDate).getTime() < 500 ){
+                            console.log("长按，0.5秒后才可以移动一次");
+                            return;
+                        }
+                        tagVue.lastEnterDate=new Date();
+                        $("#pageList").hide();
+                        var inputPageContent=$("#pageInput").val();
+                        if (inputPageContent.length<1){
+                            toastr.error("请求的页数不合理:"+inputPageContent);
+                        }else if (inputPageContent=="" ) {
+                            toastr.error("请求的页数不得为空:"+inputPageContent);
+                        }else if(parseInt(inputPageContent)>tagVue.totalPage){
+                            toastr.error("请求的页数不存在:"+inputPageContent);
+                        }else if (parseInt(inputPageContent)<0) {
+                            toastr.error("请求的页数不得为负数:"+inputPageContent);
+                        }
+                        else{
+                            if (parseInt(inputPageContent)==tagVue.nowPage){
+                                toastr.success("切换到页"+inputPageContent+"成功!");
+                            } else{
+                                // segVue.showPageList=false;
+                                this.nowPage=parseInt(inputPageContent);
+                                $("#pageInput").val(tagVue.nowPage);
+                                tagVue.getTagsByPage(inputPageContent);
+                            }
+
+                        }
+                    }
+                    return;
+                });
+
+            },
+            getTagsByPage:function(pageNum){
+                this.nowPage=parseInt(pageNum);
+                $("#pageInput").val(this.nowPage);
+                // toastr.success("切换到页："+pageNum);
+                this.$http.get("/tags/getTagByPage/"+pageNum).then(function (pageResponse) {
+                    console.log(pageResponse);
+                    this.tagInfos=[];
+                    var responseData=pageResponse.data;
+                    if (responseData.length<101 && responseData.length>0){
+                        this.tagInfos=responseData;
+                    } else if (responseData.length>100) {
+                        for(var i=0;i<100;i++){
+                            (this.tagInfos).push(responseData[i]);
+                        }
+                        setTimeout(function () {
+                            for(var j=100;j<responseData.length;j++){
+                                (tagVue.tagInfos).push(responseData[j]);
+                            }
+                        },1000);
+                        toastr.success("切换到第"+pageNum+"页成功!");
+                    }else{
+                        toastr.warning("sorry,第"+pageNum+"页内容消失!");
+                    }
+                });
             },
             getTagData:function(tag){
               this.$http.get("/tags/getTagInfosByTag/"+tag)
@@ -161,31 +243,44 @@ function tag() {
                 }
                 $("#titleAddTagButton").attr("disabled",false);
 
+            },
+            firstGetTagInfo:function () {
+                this.$http.get("/tags/getAllTags")
+                    .then(function (allResponse) {
+                        var allResponseData=allResponse.data;
+                        var pageNum=allResponseData.pageNum;
+                        this.totalPage=pageNum;
+                        this.nowPage=1;
+                        $("#pageInput").val(this.nowPage);
+
+                        this.tagInfos=[];
+                        var responseData=allResponseData.pageData;
+                        console.log(responseData.length);
+                        if (responseData.length<100){
+                            this.tagInfos=responseData;
+                            toastr.success("加载成功");
+                        } else{
+                            for(var i=0;i<100;i++){
+                                (this.tagInfos).push(responseData[i]);
+                            }
+                            setTimeout(function () {
+                                for(var j=100;j<responseData.length;j++){
+                                    (tagVue.tagInfos).push(responseData[j]);
+                                }
+                                toastr.success("加载成功");
+                            },1000);
+                        }
+                        // this.tagInfos=value.data;
+                    })
+                    .catch(function (e) {
+                        console.log(e);
+                        toastr.error("错误"+e.status+":"+e.statusText);
+                    });
             }
         },
         mounted:function () {
-            this.$http.get("/tags/getAllTags")
-                .then(function (value) {
-                    this.tagInfos=[];
-                    var responseData=value.data;
-                    if (responseData.length<100){
-                        this.tagInfos=responseData;
-                    } else{
-                        for(var i=0;i<100;i++){
-                            (this.tagInfos).push(responseData[i]);
-                        }
-                        setTimeout(function () {
-                            for(var j=100;j<responseData.length;j++){
-                                (tagVue.tagInfos).push(responseData[j]);
-                            }
-                        },3000);
-                    }
-                    // this.tagInfos=value.data;
-                })
-                .catch(function (e) {
-                console.log(e);
-                toastr.error("错误"+e.status+":"+e.statusText);
-            });
+            this.lastEnterDate=new Date();
+            this.firstGetTagInfo();
             this.$http.get("/tags/getTagList").then(function (value) {
                 this.allTags=value.data;
                 if (this.allTags.length>10){

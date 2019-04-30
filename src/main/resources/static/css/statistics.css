@@ -56,3 +56,7 @@
     font-size: 16px;
     /*min-width: 500px;*/
 }
+
+.modal-dialog{
+    width:900px;
+}

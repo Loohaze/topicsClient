@@ -516,7 +516,7 @@ function statistics() {
                                         position: 'left',
                                         verticalAlign: 'middle',
                                         align: 'right',
-                                        fontSize: 9
+                                        fontSize: 12
                                     }
                                 },
 
@@ -527,6 +527,9 @@ function statistics() {
                                             verticalAlign: 'middle',
                                             align: 'left',
                                             fontsize: 15
+                                        },
+                                        textStyle: {
+                                            fontsize: 25
                                         }
                                     }
                                 },

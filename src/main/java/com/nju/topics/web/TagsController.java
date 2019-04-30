@@ -1,5 +1,7 @@
 package com.nju.topics.web;
 
+import com.nju.topics.config.Config;
+import com.nju.topics.domain.PageDataInfo;
 import com.nju.topics.domain.TagInfo;
 import com.nju.topics.dao.HistoryPapersSerivce;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 @RequestMapping("/tags")
@@ -16,6 +19,9 @@ public class TagsController {
 
     @Autowired
     private HistoryPapersSerivce historyPapersSerivce;
+
+    @Autowired
+    private Config config;
 
     /***
      *
@@ -61,8 +67,24 @@ public class TagsController {
 
     @RequestMapping("/getAllTags")
     @ResponseBody
-    public ArrayList<TagInfo> getAllTags(){
-        return historyPapersSerivce.getAllTagInfos();
+    public PageDataInfo getAllTags(){
+//        return historyPapersSerivce.getAllTagInfos();
+        PageDataInfo pageDataInfo=new PageDataInfo();
+        long totalRecords=historyPapersSerivce.getTotalRecordsNum(config.getHistoryPaperIndex());
+        int page=(int)Math.ceil(totalRecords*1.0/config.getPerPageNum());
+        pageDataInfo.setPageNum(page);
+        ArrayList<TagInfo> tagInfos=historyPapersSerivce.getTagInfosByBeginEnd(0,config.getPerPageNum());
+        pageDataInfo.setPageData(tagInfos);
+        return pageDataInfo;
+    }
+
+    @RequestMapping("/getTagByPage/{pageNum}")
+    @ResponseBody
+    public List<TagInfo> getTagInfoByPage(@PathVariable("pageNum")String pageNum){
+        int pageNumInt=Integer.parseInt(pageNum);
+        int begin=(pageNumInt-1)*config.getPerPageNum();
+        int end=begin+config.getPerPageNum();
+        return historyPapersSerivce.getTagInfosByBeginEnd(begin,end);
     }
 
     @RequestMapping("/getTagInfosByTag/{tagName}")
