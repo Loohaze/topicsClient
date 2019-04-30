@@ -11,12 +11,93 @@ function fileUD() {
         el:"#fileVue",
         data:{
             segFiles:[],
-            dictFiles:[{name:"testFile",size:2}]
+            dictFiles:[{name:"testFile",size:2}],
+            nowEditFileName:"",
+            editTextAreaModel:"",
+            nowTextAreaLineNums:0
+        },
+        watch:{
+            editTextAreaModel:function () {
+                var splitLines=this.editTextAreaModel.split("\n");
+                this.nowTextAreaLineNums=splitLines.length;
+            }
         },
         methods:{
             downLoad:function (dictFile) {
 
                 window.open("/file/download/"+dictFile.name);
+            },
+            downLoadTimes:function(dictFile){
+                this.$http.get("/file/hasTimes/"+dictFile.name).then(function (value) {
+                    var responseData=value.data;
+                    if (responseData.result=="success"){
+                        window.open("/file/downloadTimes/"+dictFile.name);
+                        toastr.success(responseData.description);
+                    } else{
+                        toastr.error(responseData.description);
+                    }
+                });
+            },
+            editDict:function(dictFile){
+                this.nowEditFileName=dictFile.name;
+                // this.$http.get("/dict/getDict/"+this.nowEditFileName).then(function (response) {
+                //     if (response.data.length>0){
+                //         var allDict=response.data;
+                //         var textAreaStr="";
+                //         for(var i=0;i<allDict.length;i++){
+                //             textAreaStr=textAreaStr+allDict[i]+" "+"10\n";
+                //         }
+                //         this.editTextAreaModel=textAreaStr;
+                //         $("#editDictTextArea").val(textAreaStr);
+                //     }
+                //     else {
+                //         $("#editDictTextArea").val("");
+                //     }
+                // });
+                $("#editDictTextArea").val("");
+                this.editTextAreaModel="";
+                this.nowTextAreaLineNums=0;
+                $("#editDictModal").modal();
+            },
+            confirmEdit:function(){
+                var newEditDict=$("#editDictTextArea").val();
+                if (this.nowTextAreaLineNums>200){
+                    toastr.error("一次不得超过200行！");
+                } else{
+                    if (newEditDict.length>0){
+                        var dictLines=newEditDict.split("\n");
+                        var newDictList=[];
+                        for (var j=0;j<dictLines.length;j++){
+                            var lineSplit=dictLines[j].split(" ");
+                            if (lineSplit[0].length>0){
+                                newDictList.push(lineSplit[0]);
+                            }
+                        }
+                        // console.log("list-newEditDict:"+newDictList);
+                        // this.$http.get("/dict/modifyDictFile/"+this.nowEditFileName+"/"+newDictList)
+                        this.$http.post("/dict/addDictList/"+this.nowEditFileName+"/"+newDictList)
+                            .then(function (value) {
+                                var responseData=value.data;
+                                if (responseData.result=="success"){
+                                    toastr.success(responseData.description);
+                                } else{
+                                    toastr.error(responseData.description);
+                                }
+                                $("#editDictModal").map(function () {
+                                    if (!$(this).is(":hidden")){
+                                        $(this).modal('hide');
+                                    }
+                                });
+                            })
+                            .catch(function (e) {
+                                console.log(e);
+                                toastr.error("错误"+e.status+":"+e.statusText);
+                            });
+                    }else{
+                        toastr.warning("至少输入一组分词词典!");
+                    }
+                }
+
             },
             downLoadSource:function (dictFile) {
 

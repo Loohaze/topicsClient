@@ -1,5 +1,6 @@
 package com.nju.topics.web;
 
+import com.nju.topics.domain.ResponseInfo;
 import com.nju.topics.service.Dict;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -30,6 +31,11 @@ public class DictController {
     @PostMapping("/addDictList/{dictName}/{newSeg}")
     public void addWordList(@PathVariable("dictName")String dictName,@PathVariable("newSeg")List<String> word) {
         dict.addWordList(dictName,word);
+    }
+
+    @RequestMapping("/modifyDictFile/{dictName}/{segs}")
+    public ResponseInfo modifyDictFile(@PathVariable("dictName")String dictName, @PathVariable("segs")List<String> segs){
+        return dict.modifyDictFile(dictName,segs);
     }
 
     @PostMapping("/delete/{dictName}/{seg}")

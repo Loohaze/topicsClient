@@ -14,3 +14,13 @@
 th{
     text-align: center;
 }
+
+#editDictTextArea{
+    resize: none;
+    width: 90%;
+    min-height: 400px;
+    max-height: 600px;
+    /*margin-bottom: -6px;*/
+    word-break: break-all;
+    margin-left: 5%;
+}
