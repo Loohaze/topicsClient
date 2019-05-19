@@ -13,7 +13,7 @@ public interface AuthorService {
      * @param authorName
      * @return
      */
-    public List getAuthorInfoByName(String indexName,String authorName);
+    List getAuthorInfoByName(String indexName,String authorName);
 
     /**
      * 根据搜索的作者名称找到与之合作的作者
@@ -21,7 +21,7 @@ public interface AuthorService {
      * @param authorName
      * @return
      */
-    public ArrayList<StatisticsInfo> getRelativeAuthorByAuthor(String indexName,String authorName);
+    ArrayList<StatisticsInfo> getRelativeAuthorByAuthor(String indexName,String authorName);
 
     /**
      * 根据论文名称找到作者
@@ -29,5 +29,5 @@ public interface AuthorService {
      * @param keyWord
      * @return
      */
-    public List getAuthorByPaper(String indexName,String keyWord);
+    List getAuthorByPaper(String indexName,String keyWord);
 }

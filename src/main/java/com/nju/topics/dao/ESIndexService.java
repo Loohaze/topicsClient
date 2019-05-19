@@ -13,11 +13,11 @@ public interface ESIndexService {
      * @param alias 索引别名
      * @param type
      */
-    public void createIndex(String name,String alias,String type);
+    void createIndex(String name,String alias,String type);
 
     /***
      * 删除指定索引，暂时不开放该接口，风险太大
      * @param name 需要删除的索引的名字
      */
-    public void deleteIndex(String name);
+    void deleteIndex(String name);
 }
