@@ -303,7 +303,7 @@ public class SegmentsImpl implements Segments {
                             break;
                         }
                     }
-                    if (!hasSame) {
+                    if (!hasSame && nowAllDicts.get(i).length()>0) {
                         addWords.add(nowAllDicts.get(i));
                     }
                 }
@@ -426,7 +426,7 @@ public class SegmentsImpl implements Segments {
             process.waitFor();
             System.out.println("结束waitfor,时间：" + dateFormat.format((new Date())));
 
-            List<StatisticsInfo> statisticsInfos=statisticsService.getAllKeyWordsByES();
+            List<StatisticsInfo> statisticsInfos=statisticsService.getAllKeyWordsByES("history");
             writeExcel(statisticsInfos,segFileName);
         } catch (IOException e) {
             e.printStackTrace();

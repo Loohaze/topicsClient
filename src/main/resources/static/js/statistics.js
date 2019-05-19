@@ -203,7 +203,7 @@ function statistics() {
 
             },
             shiftDictFile:function () {
-                statisticsVue.$http.get("/statistics/getAllKeyWords/"+statisticsVue.nowDict+"/author").then(function (response) {
+                statisticsVue.$http.get("/statistics/getAllKeyWords/"+statisticsVue.nowDict).then(function (response) {
 
                     var resAuthorDict=response.data;
                     var authorKey=[];
@@ -439,13 +439,12 @@ function statistics() {
             this.venueKeyShowChart.showLoading();
             this.institutionKeyShowChart.showLoading();
             this.$http.get("/statistics/getAllDirections").then(function (response) {
-
                 var dicts=response.data;
                 if (dicts==null || dicts.length<1){
                     this.statisticsDicts=[]
                 } else{
                     this.statisticsDicts=dicts;
-                    this.nowDict=this.statisticsDicts[0];
+                    this.nowDict=this.statisticsDicts[0].indexName;
                     this.shiftDictFile();
 
                 }
@@ -469,11 +468,11 @@ function statistics() {
                 statisticsVue.nowAuthor=params.name;
                 var treeData;
 
-                statisticsVue.$http.get("/statistics/getAuthorPapersTreeData/"+statisticsVue.nowAuthor).then(function (value) {
+                statisticsVue.$http.get("/statistics/getAuthorPapersTreeData/"+statisticsVue.nowDict+"/"+statisticsVue.nowAuthor).then(function (value) {
                     console.log(value);
                     treeData=value.data;
                 });
-                statisticsVue.$http.get("/statistics/getRelativeAuthors/"+statisticsVue.nowAuthor).then(function (value) {
+                statisticsVue.$http.get("/statistics/getRelativeAuthors/"+statisticsVue.nowDict+"/"+statisticsVue.nowAuthor).then(function (value) {
                     console.log(value);
                     if (value.data.length>0){
                         statisticsVue.relationList=value.data;

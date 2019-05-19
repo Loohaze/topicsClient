@@ -59,7 +59,7 @@
         <ul class="nav navbar-nav">
             <span style="font-family: 宋体;">文件</span>
             <select name="year" id="countDictSelect" class="btn btn-default dropdown-toggle" v-on:change="statisticsDictSelect">
-                <option v-for="dict in statisticsDicts" v-bind:value=dict>{{dict}}</option>
+                <option v-for="dict in statisticsDicts" v-bind:value=dict.indexName>{{dict.indexAlias}}</option>
             </select>
 
         </ul>

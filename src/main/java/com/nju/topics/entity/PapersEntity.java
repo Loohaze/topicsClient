@@ -1,88 +1,81 @@
 package com.nju.topics.entity;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.elasticsearch.annotations.Document;
-import org.springframework.data.elasticsearch.annotations.Field;
-import org.springframework.data.elasticsearch.annotations.FieldType;
+public class PapersEntity {
 
-//@Document(indexName = config.getHistoryPaperIndex() ,type = "history")
-public class HistoryPapersEntity {
-
-//    @Id
     private String SNO;
 
-//    @Field(type = FieldType.Text)
+    //    @Field(type = FieldType.Text)
 //    文章标题（中文）
     private String LYPM;
 
-//    @Field(type = FieldType.Keyword)
+    //    @Field(type = FieldType.Keyword)
 //    文章标题（英文）
     private String BLPM;
 
-//    @Field(type = FieldType.Keyword)
+    //    @Field(type = FieldType.Keyword)
 //    文章类型（一般要1/2的）
     private String WZXL;
 
-//    @Field(type = FieldType.Keyword)
+    //    @Field(type = FieldType.Keyword)
 //    期刊NO
     private String QKNO;
 
-//    @Field(type = FieldType.Keyword)
+    //    @Field(type = FieldType.Keyword)
     private String XKDM1;
 
-//    @Field(type = FieldType.Keyword)
+    //    @Field(type = FieldType.Keyword)
     private String XKDM2;
 
-//    @Field(type = FieldType.Keyword)
+    //    @Field(type = FieldType.Keyword)
     private String YM;
 
-//    @Field(type = FieldType.Integer)
+    //    @Field(type = FieldType.Integer)
     private int YWSL;
 
-//    @Field(type = FieldType.Keyword)
+    //    @Field(type = FieldType.Keyword)
 //    关键词
     private String BYC;
 
-//    @Field(type = FieldType.Keyword)
+    //    @Field(type = FieldType.Keyword)
     private String DCBJ;
 
-//    @Field(type = FieldType.Keyword)
+    //    @Field(type = FieldType.Keyword)
     private String XMLX;
 
-//    @Field(type = FieldType.Keyword)
+    //    @Field(type = FieldType.Keyword)
     private String JJLB;
 
-//    @Field(type = FieldType.Keyword)
+    //    @Field(type = FieldType.Keyword)
     private String LRYMC;
 
-//    @Field(type = FieldType.Keyword)
+    //    @Field(type = FieldType.Keyword)
     private String SKDM;
 
-//    @Field(type = FieldType.Keyword)
+    //    @Field(type = FieldType.Keyword)
     private String YJDM;
 
-//    @Field(type = FieldType.Keyword)
+    //    @Field(type = FieldType.Keyword)
     private String XKFL1;
 
-//    @Field(type = FieldType.Integer)
+    //    @Field(type = FieldType.Integer)
     private int YCFLAG;
 
-//    @Field(type = FieldType.Keyword)
+    //    @Field(type = FieldType.Keyword)
     private String XKFL2;
 
-//    @Field(type = FieldType.Keyword)
+    //    @Field(type = FieldType.Keyword)
     private String XKDM;
 
-//    @Field(type = FieldType.Keyword)
+    //    @Field(type = FieldType.Keyword)
     private String NIAN;
 
-//    @Field(type = FieldType.Keyword)
+    //    @Field(type = FieldType.Keyword)
     private String JUAN;
 
-//    @Field(type = FieldType.Keyword)
+    //    @Field(type = FieldType.Keyword)
     private String QI;
 
-//    @Field(type = FieldType.Integer)
+    //    @Field(type = FieldType.Integer)
     private int QKLB;
 
 

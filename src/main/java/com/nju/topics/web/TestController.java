@@ -1,8 +1,6 @@
 package com.nju.topics.web;
 
 import com.nju.topics.domain.TagInfo;
-import com.nju.topics.dao.HistoryAuthorsService;
-import com.nju.topics.dao.HistoryPapersSerivce;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,10 +13,6 @@ public class TestController {
 
 //    @Autowired
 //    private HistoryRepository historyRepository;
-    @Autowired
-    private HistoryPapersSerivce historyPapersSerivce;
-    @Autowired
-    private HistoryAuthorsService historyAuthorsService;
 
 //    @RequestMapping("")
 //    public String test(){
@@ -49,22 +43,22 @@ public class TestController {
 //    public ArrayList<StatisticsInfo> getRelativeAuthors(@PathVariable("author")String author){
 //        return historyAuthorsService.getRelativeAuthorByAuthor(author);
 //    }
-
-    @RequestMapping("/test/modifyTags")
-    public void modifyTags(){
-        ArrayList<String> origin=new ArrayList<>();
-        origin.add("民国");
-        historyPapersSerivce.bulkUpdateTags(origin,"民国时期");
-    }
-
-    @RequestMapping("/test/getAllTags")
-    public ArrayList<TagInfo> getAllTags(){
-        return historyPapersSerivce.getAllTagInfos();
-    }
-    @RequestMapping("/test/getAllTags/{tagName}")
-    public ArrayList<TagInfo> getAllTagsByTag(@PathVariable("tagName")String tagName){
-        return historyPapersSerivce.getTagInfosByTag(tagName);
-    }
+//
+//    @RequestMapping("/test/modifyTags")
+//    public void modifyTags(){
+//        ArrayList<String> origin=new ArrayList<>();
+//        origin.add("民国");
+//        historyPapersSerivce.bulkUpdateTags(origin,"民国时期");
+//    }
+//
+//    @RequestMapping("/test/getAllTags")
+//    public ArrayList<TagInfo> getAllTags(){
+//        return historyPapersSerivce.getAllTagInfos();
+//    }
+//    @RequestMapping("/test/getAllTags/{tagName}")
+//    public ArrayList<TagInfo> getAllTagsByTag(@PathVariable("tagName")String tagName){
+//        return historyPapersSerivce.getTagInfosByTag(tagName);
+//    }
 
 //    @RequestMapping("/testSave")
 //    public String testSave(){

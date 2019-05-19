@@ -1,11 +1,12 @@
 package com.nju.topics.web;
 
+import com.nju.topics.dao.AuthorService;
+import com.nju.topics.dao.PaperService;
 import com.nju.topics.domain.StatisticsInfo;
 import com.nju.topics.domain.TreeDataInfo;
-import com.nju.topics.entity.HistoryAuthorEntity;
-import com.nju.topics.entity.HistoryPapersEntity;
-import com.nju.topics.dao.HistoryAuthorsService;
-import com.nju.topics.dao.HistoryPapersSerivce;
+import com.nju.topics.entity.AuthorEntity;
+import com.nju.topics.entity.IndexEntity;
+import com.nju.topics.entity.PapersEntity;
 import com.nju.topics.service.StatisticsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -24,34 +25,43 @@ public class StatisticsController {
     @Resource
     private StatisticsService statisticsService;
     @Autowired
-    private HistoryPapersSerivce historyPapersSerivce;
+    private PaperService paperService;
     @Autowired
-    private HistoryAuthorsService historyAuthorsService;
+    private AuthorService authorService;
+//    @Autowired
+//    private HistoryPapersSerivce historyPapersSerivce;
+//    @Autowired
+//    private HistoryAuthorsService historyAuthorsService;
 
     @RequestMapping("/getAllDirections")
     @ResponseBody
-    public ArrayList<String> getAllDirections(){
+    public List getAllDirections(){
         return statisticsService.getAllStatisticsDictNames();
     }
 
-    @RequestMapping("/getAllKeyWords/{dictName}/{attribute}")
+    @RequestMapping("/getAllKeyWords/{indexName}/{attribute}")
     @ResponseBody
-    public ArrayList<StatisticsInfo> getAllKeyWords(@PathVariable("dictName")String dictName, @PathVariable("attribute")String attribute){
-        if(dictName.equals("historyES")){
-            return statisticsService.getAllKeyWordsByES();
+    public ArrayList<StatisticsInfo> getAllKeyWords(@PathVariable("indexName")String indexName, @PathVariable("attribute")String attribute){
+        if(indexName.equals("historyES")){
+            return statisticsService.getAllKeyWordsByES("history");
         }else{
-            return statisticsService.getAllKeyWords(dictName,attribute);
+            return statisticsService.getAllKeyWords(indexName,attribute);
         }
     }
-
-    @RequestMapping("/getOneKeyAttribute/{dictName}/{attributeName}/{keyword}")
+    @RequestMapping("/getAllKeyWords/{indexName}")
     @ResponseBody
-    public ArrayList<StatisticsInfo> getOneKeyAttribute(@PathVariable("dictName")String dictName, @PathVariable("attributeName")String attributeName,
+    public ArrayList<StatisticsInfo> getAllKeyWords(@PathVariable("indexName")String indexName){
+        return statisticsService.getAllKeyWordsByES(indexName);
+    }
+
+    @RequestMapping("/getOneKeyAttribute/{indexName}/{attributeName}/{keyword}")
+    @ResponseBody
+    public ArrayList<StatisticsInfo> getOneKeyAttribute(@PathVariable("indexName")String indexName, @PathVariable("attributeName")String attributeName,
                                                         @PathVariable("keyword")String keyword){
         if(attributeName.equals("author")){
-            return statisticsService.getAuthorAttributeByES(keyword);
+            return statisticsService.getAuthorAttributeByES(indexName,keyword);
         }else if(attributeName.equals("institution")){
-            return  statisticsService.getInstitutionAttributeByES(keyword);
+            return  statisticsService.getInstitutionAttributeByES(indexName,keyword);
         }else{
             return null;
         }
@@ -69,34 +79,34 @@ public class StatisticsController {
 
     }
 
-    @RequestMapping("/getPapersByName/{paperName}")
+    @RequestMapping("/getPapersByName/{indexName}/{paperName}")
     @ResponseBody
-    public List<HistoryPapersEntity> getPapersByName(@PathVariable("paperName")String paperName){
-        return historyPapersSerivce.getHistoryPaperByName(paperName);
+    public List<PapersEntity> getPapersByName(@PathVariable("indexName")String indexName,@PathVariable("paperName")String paperName){
+        return paperService.getPaperByName(indexName,paperName);
     }
 
-    @RequestMapping("/getPapersByAuthor/{author}")
+    @RequestMapping("/getPapersByAuthor/{indexName}/{author}")
     @ResponseBody
-    public List<HistoryPapersEntity> getPapersByAuthor(@PathVariable("author")String author){
-        return historyPapersSerivce.getHistoryPapersByAuthor(author);
+    public List<PapersEntity> getPapersByAuthor(@PathVariable("indexName")String indexName,@PathVariable("author")String author){
+        return paperService.getPapersByAuthor(indexName,author);
     }
 
-    @RequestMapping("/getAuthorInfo/{author}")
+    @RequestMapping("/getAuthorInfo/{indexName}/{author}")
     @ResponseBody
-    public List<HistoryAuthorEntity> getAuthorInfo(@PathVariable("author")String author){
-        return historyAuthorsService.getAuthorInfoByName(author);
+    public List<AuthorEntity> getAuthorInfo(@PathVariable("indexName")String indexName, @PathVariable("author")String author){
+        return authorService.getAuthorInfoByName(indexName,author);
     }
 
-    @RequestMapping("/getAuthorPapersTreeData/{author}")
+    @RequestMapping("/getAuthorPapersTreeData/{indexName}/{author}")
     @ResponseBody
-    public TreeDataInfo getAuthorInfoTreeData(@PathVariable("author")String author){
-        return historyPapersSerivce.getHistoryPapersByAuthorAggratedByYear(author);
+    public TreeDataInfo getAuthorInfoTreeData(@PathVariable("indexName")String indexName,@PathVariable("author")String author){
+        return paperService.getPapersByAuthorAggratedByYear(indexName,author);
     }
 
-    @RequestMapping("/getRelativeAuthors/{author}")
+    @RequestMapping("/getRelativeAuthors/{indexName}/{author}")
     @ResponseBody
-    public ArrayList<StatisticsInfo> getRelativeAuthors(@PathVariable("author")String author){
-        return historyAuthorsService.getRelativeAuthorByAuthor(author);
+    public ArrayList<StatisticsInfo> getRelativeAuthors(@PathVariable("indexName")String indexName,@PathVariable("author")String author){
+        return authorService.getRelativeAuthorByAuthor(indexName,author);
     }
 
 }

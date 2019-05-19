@@ -1,13 +1,13 @@
 package com.nju.topics.entity;
 
-public class HistoryAuthorEntity {
-//    ZZMC
+public class AuthorEntity {
+    //    ZZMC
     private String authorName;
 
-//    JGMC
+    //    JGMC
     private String authorInstitution;
 
-//    TXDZ
+    //    TXDZ
     private String authorDepartment;
 
     public String getAuthorDepartment() {
@@ -34,4 +34,5 @@ public class HistoryAuthorEntity {
     public void setAuthorName(String authorName) {
         this.authorName = authorName;
     }
+
 }

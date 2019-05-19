@@ -21,7 +21,8 @@ function tag() {
             allShow:true,
             totalPage:1,
             lastEnterDate:"",
-            nowPage:1
+            nowPage:1,
+            nowIndex:"history"
         },
         methods:{
             chooseAddTag:function (tagInfo) {
@@ -92,7 +93,7 @@ function tag() {
                 this.nowPage=parseInt(pageNum);
                 $("#pageInput").val(this.nowPage);
                 // toastr.success("切换到页："+pageNum);
-                this.$http.get("/tags/getTagByPage/"+pageNum).then(function (pageResponse) {
+                this.$http.get("/tags/getTagByPage/"+this.nowIndex+"/"+pageNum).then(function (pageResponse) {
                     console.log(pageResponse);
                     this.tagInfos=[];
                     var responseData=pageResponse.data;
@@ -114,7 +115,7 @@ function tag() {
                 });
             },
             getTagData:function(tag){
-              this.$http.get("/tags/getTagInfosByTag/"+tag)
+              this.$http.get("/tags/getTagInfosByTag/"+this.nowIndex+"/"+tag)
                   .then(function (value) {
                       if (value.data.length>0){
                           this.specialTagInfos=value.data;
@@ -178,7 +179,7 @@ function tag() {
                     }
                     if (hasOrigin){
                         console.log(transferTagInfo);
-                        this.$http.get("/tags/bulkAddTags/"+transferTagInfo).then(
+                        this.$http.get("/tags/bulkAddTags/"+this.nowIndex+"/"+transferTagInfo).then(
                             function (value) {
                                 toastr.success("添加成功");
                                 $("#tagOriginsTextArea").val("");
@@ -221,7 +222,7 @@ function tag() {
                 }
                 console.log(tagInfoString);
                 if (hasTag){
-                    this.$http.get("/tags/addTitleTag/"+tagInfoString).then(function (value) {
+                    this.$http.get("/tags/addTitleTag/"+this.nowIndex+"/"+tagInfoString).then(function (value) {
                         for(var j=0;j<this.tagInfos.length;j++){
                             if (this.tagInfos[j].title==this.oneTag.title){
                                 for(var k=0;k<newTags.length;k++){
@@ -245,7 +246,7 @@ function tag() {
 
             },
             firstGetTagInfo:function () {
-                this.$http.get("/tags/getAllTags")
+                this.$http.get("/tags/getAllTags/"+this.nowIndex)
                     .then(function (allResponse) {
                         var allResponseData=allResponse.data;
                         var pageNum=allResponseData.pageNum;
@@ -281,7 +282,7 @@ function tag() {
         mounted:function () {
             this.lastEnterDate=new Date();
             this.firstGetTagInfo();
-            this.$http.get("/tags/getTagList").then(function (value) {
+            this.$http.get("/tags/getTagList/"+this.nowIndex).then(function (value) {
                 this.allTags=value.data;
                 if (this.allTags.length>10){
                     this.hotButtons=[];

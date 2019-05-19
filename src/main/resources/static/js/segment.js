@@ -86,7 +86,8 @@ function segmentTrain() {
                       console.log("rerun console:");
                       console.log(response);
                   if (response.bodyText=="success"){
-                      toastr.success("成功提交任务，五分钟后可以刷新页面显示新的分词结果！")
+                      toastr.success("重新分词成功!");
+                      this.getAllSegments();
                   } else{
                       toastr.error(response.bodyText);
                   }

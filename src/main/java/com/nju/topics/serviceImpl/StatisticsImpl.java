@@ -1,11 +1,13 @@
 package com.nju.topics.serviceImpl;
 
 import com.nju.topics.config.Config;
-import com.nju.topics.dao.HistoryPapersSerivce;
+import com.nju.topics.dao.AuthorService;
+import com.nju.topics.dao.IndexInfoService;
+import com.nju.topics.dao.PaperService;
 import com.nju.topics.domain.Segment;
 import com.nju.topics.domain.StatisticsInfo;
-import com.nju.topics.entity.HistoryAuthorEntity;
-import com.nju.topics.dao.HistoryAuthorsService;
+import com.nju.topics.entity.AuthorEntity;
+import com.nju.topics.entity.IndexEntity;
 import com.nju.topics.service.Segments;
 import com.nju.topics.service.StatisticsService;
 import com.nju.topics.utils.MapValueComparator;
@@ -13,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ResourceUtils;
 
-import java.awt.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -31,32 +32,38 @@ public class StatisticsImpl implements StatisticsService {
     @Autowired
     private Segments segmentsService;
 
-    @Autowired
-    private HistoryAuthorsService historyAuthorsService;
 
     @Autowired
-    private HistoryPapersSerivce historyPapersSerivce;
+    private AuthorService authorService;
+
+    @Autowired
+    private PaperService paperService;
+
+    @Autowired
+    private IndexInfoService indexInfoService;
+
 
     @Override
-    public ArrayList<String> getAllStatisticsDictNames() {
-        ArrayList<String> allStatistics=new ArrayList<>();
-
-        allStatistics.add("historyES");
-
-        File statisticsFolder=new File(config.getStatisticsFolder());
-        if (statisticsFolder.exists() && statisticsFolder.isDirectory()){
-            String[] allDirectories=statisticsFolder.list();
-            if (allDirectories==null || allDirectories.length<1){
-                return null;
-            }
-
-            for(String eachFolder :allDirectories){
-                allStatistics.add(eachFolder);
-            }
-
-            return allStatistics;
-        }
-        return allStatistics;
+    public List getAllStatisticsDictNames() {
+//        ArrayList<String> allStatistics=new ArrayList<>();
+//
+//        allStatistics.add("historyES");
+//
+//        File statisticsFolder=new File(config.getStatisticsFolder());
+//        if (statisticsFolder.exists() && statisticsFolder.isDirectory()){
+//            String[] allDirectories=statisticsFolder.list();
+//            if (allDirectories==null || allDirectories.length<1){
+//                return null;
+//            }
+//
+//            for(String eachFolder :allDirectories){
+//                allStatistics.add(eachFolder);
+//            }
+//
+//            return allStatistics;
+//        }
+//        return allStatistics;
+        return indexInfoService.getIndexInfos();
     }
 
     @Override
@@ -116,12 +123,12 @@ public class StatisticsImpl implements StatisticsService {
     }
 
     @Override
-    public ArrayList<StatisticsInfo> getAllKeyWordsByES(){
+    public ArrayList<StatisticsInfo> getAllKeyWordsByES(String indexName){
         ArrayList<StatisticsInfo> statisticsInfos=new ArrayList<>();
-        Map<String,Integer> allKeyWords=historyPapersSerivce.getAllTagsAndTimes();
+        Map<String,Integer> allKeyWords=paperService.getAllTagsAndTimes(indexName);
         Map<String,Integer> sortMap=new HashMap<>();
 
-        List<Segment> segList = (segmentsService.getSegmentsNoneCondition("history.txt"));
+        List<Segment> segList = (segmentsService.getSegmentsNoneCondition(indexName+".txt"));
 
         for(int i=0;i<segList.size();i++){
             HashMap<String,Integer> tempSegMap=new HashMap<>();
@@ -223,14 +230,14 @@ public class StatisticsImpl implements StatisticsService {
     }
 
     @Override
-    public ArrayList<StatisticsInfo> getAuthorAttributeByES(String keyWord){
+    public ArrayList<StatisticsInfo> getAuthorAttributeByES(String indexName,String keyWord){
         ArrayList<StatisticsInfo> statisticsInfos=new ArrayList<>();
         Map<String,Integer> allKeyWords=new HashMap<>();
         Map<String,Integer> sortMap=new HashMap<>();
 
-        List<HistoryAuthorEntity> list = historyAuthorsService.getAuthorByHistoryPaper(keyWord);
+        List<AuthorEntity> list = authorService.getAuthorByPaper(indexName,keyWord);
 
-        for(HistoryAuthorEntity author:list){
+        for(AuthorEntity author:list){
             String authorName = author.getAuthorName();
             if(allKeyWords.containsKey(authorName)){
                 int val = allKeyWords.get(authorName) + 1;
@@ -239,7 +246,7 @@ public class StatisticsImpl implements StatisticsService {
                 allKeyWords.put(authorName, 1);
             }
         }
-        System.out.println("共找到多少作者："+allKeyWords.size());
+//        System.out.println("共找到多少作者："+allKeyWords.size());
 
         sortMap=new TreeMap<String,Integer>(new MapValueComparator(allKeyWords));
         sortMap.putAll(allKeyWords);
@@ -253,14 +260,14 @@ public class StatisticsImpl implements StatisticsService {
     }
 
     @Override
-    public ArrayList<StatisticsInfo> getInstitutionAttributeByES(String keyWord){
+    public ArrayList<StatisticsInfo> getInstitutionAttributeByES(String indexName,String keyWord){
         ArrayList<StatisticsInfo> statisticsInfos=new ArrayList<>();
         Map<String,Integer> allKeyWords=new HashMap<>();
         Map<String,Integer> sortMap=new HashMap<>();
 
-        List<HistoryAuthorEntity> list = historyAuthorsService.getAuthorByHistoryPaper(keyWord);
+        List<AuthorEntity> list = authorService.getAuthorByPaper(indexName,keyWord);
 
-        for(HistoryAuthorEntity author:list){
+        for(AuthorEntity author:list){
             String insName = author.getAuthorInstitution();
             if(allKeyWords.containsKey(insName)){
                 int val = allKeyWords.get(insName) + 1;

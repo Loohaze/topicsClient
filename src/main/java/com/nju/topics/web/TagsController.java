@@ -1,9 +1,9 @@
 package com.nju.topics.web;
 
 import com.nju.topics.config.Config;
+import com.nju.topics.dao.PaperService;
 import com.nju.topics.domain.PageDataInfo;
 import com.nju.topics.domain.TagInfo;
-import com.nju.topics.dao.HistoryPapersSerivce;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,7 +18,7 @@ import java.util.List;
 public class TagsController {
 
     @Autowired
-    private HistoryPapersSerivce historyPapersSerivce;
+    private PaperService paperService;
 
     @Autowired
     private Config config;
@@ -28,9 +28,9 @@ public class TagsController {
      * @param
      * @return
      */
-    @RequestMapping("/bulkAddTags/{addInfo}")
+    @RequestMapping("/bulkAddTags/{indexName}/{addInfo}")
     @ResponseBody
-    public String addTags(@PathVariable("addInfo")String tagInfo){
+    public String addTags(@PathVariable("indexName")String indexName,@PathVariable("addInfo")String tagInfo){
 
         String[] tagInfoSplit=tagInfo.split(":");
         String tag=tagInfoSplit[0];
@@ -44,13 +44,13 @@ public class TagsController {
                 originList.add(eachOriginSplit);
             }
         }
-        historyPapersSerivce.bulkUpdateTags(originList,tag);
+        paperService.bulkUpdateTags(indexName,originList,tag);
         return "success";
     }
 
-    @RequestMapping("/addTitleTag/{titleTagInfo}")
+    @RequestMapping("/addTitleTag/{indexName}/{titleTagInfo}")
     @ResponseBody
-    public String addTitleTag(@PathVariable("titleTagInfo")String  titleTagInfo){
+    public String addTitleTag(@PathVariable("indexName")String indexName,@PathVariable("titleTagInfo")String  titleTagInfo){
         String[] titleTagInfoSplit=titleTagInfo.split(":");
         String titleName=titleTagInfoSplit[0];
         String[] titleTagSplit=titleTagInfoSplit[1].split("-");
@@ -61,41 +61,41 @@ public class TagsController {
             }
         }
 
-        historyPapersSerivce.bulkUpdateTagsByTitle(titleName,tagList);
+        paperService.bulkUpdateTagsByTitle(indexName,titleName,tagList);
         return "success";
     }
 
-    @RequestMapping("/getAllTags")
+    @RequestMapping("/getAllTags/{indexName}")
     @ResponseBody
-    public PageDataInfo getAllTags(){
+    public PageDataInfo getAllTags(@PathVariable("indexName")String indexName){
 //        return historyPapersSerivce.getAllTagInfos();
         PageDataInfo pageDataInfo=new PageDataInfo();
-        long totalRecords=historyPapersSerivce.getTotalRecordsNum(config.getHistoryPaperIndex());
+        long totalRecords=paperService.getTotalRecordsNum(indexName+"papers");
         int page=(int)Math.ceil(totalRecords*1.0/config.getPerPageNum());
         pageDataInfo.setPageNum(page);
-        ArrayList<TagInfo> tagInfos=historyPapersSerivce.getTagInfosByBeginEnd(0,config.getPerPageNum());
+        ArrayList<TagInfo> tagInfos=paperService.getTagInfosByBeginEnd(indexName,0,config.getPerPageNum());
         pageDataInfo.setPageData(tagInfos);
         return pageDataInfo;
     }
 
-    @RequestMapping("/getTagByPage/{pageNum}")
+    @RequestMapping("/getTagByPage/{indexName}/{pageNum}")
     @ResponseBody
-    public List<TagInfo> getTagInfoByPage(@PathVariable("pageNum")String pageNum){
+    public List<TagInfo> getTagInfoByPage(@PathVariable("indexName")String indexName,@PathVariable("pageNum")String pageNum){
         int pageNumInt=Integer.parseInt(pageNum);
         int begin=(pageNumInt-1)*config.getPerPageNum();
         int end=begin+config.getPerPageNum();
-        return historyPapersSerivce.getTagInfosByBeginEnd(begin,end);
+        return paperService.getTagInfosByBeginEnd(indexName,begin,end);
     }
 
-    @RequestMapping("/getTagInfosByTag/{tagName}")
+    @RequestMapping("/getTagInfosByTag/{indexName}/{tagName}")
     @ResponseBody
-    public ArrayList<TagInfo> getTagInfosByTagName(@PathVariable("tagName")String tagName){
-        return historyPapersSerivce.getTagInfosByTag(tagName);
+    public ArrayList<TagInfo> getTagInfosByTagName(@PathVariable("indexName")String indexName,@PathVariable("tagName")String tagName){
+        return paperService.getTagInfosByTag(indexName,tagName);
     }
 
-    @RequestMapping("/getTagList")
+    @RequestMapping("/getTagList/{indexName}")
     @ResponseBody
-    public ArrayList<String> getTagList(){
-        return historyPapersSerivce.getSomeTags();
+    public ArrayList<String> getTagList(@PathVariable("indexName")String indexName){
+        return paperService.getAllTags(indexName);
     }
 }
