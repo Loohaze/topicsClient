@@ -25,4 +25,9 @@ public class StartController {
     public String tags(){
         return "tag/tag";
     }
+
+    @RequestMapping("/lda/evolution")
+    public String evolution(){
+        return "lda/evolution";
+    }
 }

@@ -1,12 +1,12 @@
 package com.nju.topics.web;
 
-import com.nju.topics.domain.TagInfo;
+import com.nju.topics.config.Config;
+import com.nju.topics.domain.EvolutionDataInfo;
+import com.nju.topics.service.LDAService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.ArrayList;
 
 @RestController
 public class TestController {
@@ -80,5 +80,23 @@ public class TestController {
 //        historyRepository.save(historyPaperInfo1);
 //
 //        return "success";
+//    }
+
+
+//    @Autowired
+//    private LDAService ldaService;
+//
+//    @Autowired
+//    private Config config;
+//
+//    @RequestMapping("/lda/getJson")
+//    public String getLdaJson(){
+//        return ldaService.getLDARelationString(config.getEvolutionFolderPath());
+//    }
+//
+//    @RequestMapping("/lda/getEvolutionData/{id}")
+//    public EvolutionDataInfo getEvolutionData(@PathVariable("id")String id){
+//        String parentPath=config.getEvolutionFolderPath();
+//        return ldaService.getEvolutionData(parentPath,id);
 //    }
 }

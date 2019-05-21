@@ -63,9 +63,15 @@ public class Config {
     @Value("${dict.statistics.path}")
     private String dictStatisticsPath;
 
+    @Value("${evolution.data.path}")
+    private String evolutionFolderPath;
+
     private long preGetNum=0;
 
     private int perPageNum=500;
+
+    private int EVOLUTION_SUMMARY_PAPER=10;
+    private int EVOLUTION_SUMMARY_TOPIC=20;
 
     public String[] noStatisticsWords={"的","为例","20","志","初探","考","说","读","观","前","题","卷","早期","形成","地区","研讨会","探析","理论","评","再","化","辩","文献","发展","研究","新","史学","历史","中","年","中心","时期","综述","史","笔谈","关系","°","世纪","º","ƒ","年代","古代",
     "∑","µ","±","Œ","÷","与","–","体系", "相关","∂","区域", "∞","π","Ω", "Ã", "™","Ø","≥","∫","ø","¡","œ","2013","˙","À","∆","ÿ"};
@@ -163,5 +169,17 @@ public class Config {
 
     public String getDictStatisticsPath() {
         return dictStatisticsPath;
+    }
+
+    public String getEvolutionFolderPath() {
+        return evolutionFolderPath;
+    }
+
+    public int getEVOLUTION_SUMMARY_PAPER() {
+        return EVOLUTION_SUMMARY_PAPER;
+    }
+
+    public int getEVOLUTION_SUMMARY_TOPIC() {
+        return EVOLUTION_SUMMARY_TOPIC;
     }
 }
